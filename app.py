@@ -18,7 +18,7 @@ bcrypt = Bcrypt(app)
 #conn = sqlite3.connect("data.db")
 
 from model import User
-from form import formRegisteration
+from form import formRegisteration, loginForm
 
 @app.before_first_request
 def setup_db():
@@ -44,9 +44,35 @@ def regiterPagedb():
         return redirect(url_for('login'))
     return render_template('register-db.html', regiterForm=regiterForm, name_website='SQL Registration to IS 2020 Platform', name=name)
 
-@app.route('/login')
+
+@app.route('/login', methods=['POST', 'GET'])
 def login():
-    return 'loggato'
+    login_form = loginForm()
+    if login_form.validate_on_submit():
+        user_info = User.query.filter_by(username=login_form.username.data).first()
+        if user_info and bcrypt.check_password_hash(user_info.password, login_form.password.data):
+            session['user_id'] = user_info.id
+            session['name'] = user_info.name
+            session['email'] = user_info.username
+            session['usern'] = user_info.usern
+            return redirect('dashboard')
+
+    return render_template('login.html', login_form=login_form)
+
+
+@app.route('/dashboard')
+def dashboard():
+    if session.get('email'):
+        name = session.get('name')
+        return render_template('dashboard.html', name=name)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('posthtml_layout'))  # =>redirect(index)
 
 if __name__ == '__main__':
     app.run()
