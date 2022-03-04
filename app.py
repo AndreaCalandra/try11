@@ -14,7 +14,7 @@ app = Flask(__name__)
 #login.login_view = 'login'
 
 app.config['SECRET_KEY'] = 'sssdhgclshfsh;shd;jshjhsjhjhsjldchljk'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new4.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new5.db'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -62,21 +62,21 @@ from form import formRegisteration, loginForm, EditProfileForm, firmformRegister
 #EMAIL code
 def send_mail(to,subject,template,**kwargs):
     msg=Message(subject,recipients=[to],sender=app.config['MAIL_USERNAME'])
-    # msg.body= render_template(template + '.txt',**kwargs)
+    #msg.body= render_template(template + '.txt',**kwargs)
     msg.html= render_template(template + '.html',**kwargs)
     mail.send(msg)
 
 @app.before_first_request
 def setup_db():
-    db.drop_all()
+    #db.drop_all()
     db.create_all()
     role_admin = Role(role_name='Admin')
     role_user = Role(role_name='User')
     pass_c = bcrypt.generate_password_hash("Bon-U$2022")
-    user_admin = User(username="andrea.calandra99@gmail.com", usern="Cally", name="Andrea", password=pass_c, isee=0,
-                      age=0, profession="", number_child=0, role_name=role_admin)
+    #user_admin = User(username="andrea.calandra99@gmail.com", usern="Cally", name="Andrea", password=pass_c, isee=0,
+    #                  age=0, profession="", number_child=0, role_name=role_admin)
     db.session.add_all([role_admin, role_user])
-    db.session.add(user_admin)
+    #db.session.add(user_admin)
     db.session.commit()
     #db.create_all()
 
@@ -122,7 +122,7 @@ def regiterPagedb():
         # msg.body = "Hello Flask message sent from Flask-Mail"
         # mail.send(msg)
 
-        #send_mail('andrea.calandra99@gmail.com', "New User!", "mail", username=usern)
+        #send_mail('andrea.calandra99@gmail.com', "New User!", "mail", username=regiterForm.email.data)
 
         #mail.send(msg)
 
@@ -152,9 +152,6 @@ def login():
             session['profession'] = user_info.profession
             session['number_child'] = user_info.number_child
             session['user'] = True
-
-            #if login_form.remember_me:
-                #set coocke TODO
 
             login_user(user_info)
             return redirect('dashboard')
