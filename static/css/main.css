@@ -1,0 +1,89 @@
+
+
+body {
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-bottom: 10px;
+}
+a{
+    color:  #FCCC69 ;
+}
+a:hover{
+    color: #b6effb ;
+}
+.form_feedback {
+width: 1000px;
+margin: 25px auto;
+background: #4f5050 ;
+padding: 25px;
+overflow: hidden;
+-moz-border-radius: 20px;
+-webkit-border-radius: 20px;
+border-radius: 20px;
+
+}
+.attributes{
+     color: #fff;
+}
+.h2_feedback{
+font-size: 16px;
+color: #FCCC69;
+margin-bottom: 20px;
+    text-transform: uppercase;
+}
+.question{
+
+    background-color: #FCCC69 ;
+    color: black;
+    margin-right: 1000px;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    padding: 5px;
+    text-align: center;
+    font-family: Verdana, sans-serif;
+}
+.titleBlock {
+    display: block;
+    margin: auto;
+    position: relative;
+    width: fit-content;
+}
+.titleText {
+    display: inline-block;
+}
+.titleAnswer{
+    background-image: url("../images/QeA.jpeg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    width: 7.2em;
+    height:5.2em;
+    display: inline-block;
+    margin-left: 2em;
+
+}
+
+.titleQuestion{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.mainTitle{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.titlefeedback{
+    background-image: url("../images/feedback1.jpeg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 7.2em;
+    height:5.2em;
+    display: inline-block;
+    margin-left: 2em;
+}
+
+

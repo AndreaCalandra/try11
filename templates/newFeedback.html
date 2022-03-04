@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% extends "layoutfeedback.html" %}
+
+{% block title %}New Feedback{% endblock %}
+
+{% block content %}
+      <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="titleBlock"><h1 style="text-align: center" class="titleText">NEW FEEDBACK</h1><div class="titlefeedback"></div></div>
+                <hr>
+
+                <form class="form_feedback" action="/newFeedback" method="POST">
+                    <h2 class="h2_feedback" style="text-align: center">complete the following form to enter a feedback</h2>
+                    <div class="form-group">
+                        <label class="attributes">Username</label>
+                        <br>
+                         <input type="text" class="form-control" id="username" name="username" placeholder="Select a username">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="attributes">Feedback</label>
+                        <br>
+                        <textarea class="form-control" id="feedbackTextArea" rows="3" name="feedback" placeholder="Enter your feedback"></textarea>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary btn-lg">Submit your feedback</button>
+
+
+                </form>
+                <hr>
+                <button class="btn btn-secondary btn-lg" onclick="location.href='/feedback'">Back to Feedbacks</button>
+            </div>
+        </div>
+    </div>
+{%  endblock %}

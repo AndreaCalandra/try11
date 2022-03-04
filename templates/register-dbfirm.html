@@ -9,14 +9,14 @@
     <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
     <div class="row">
       <div class="col-lg-8 mb-4">
-        <h3>Register Form in database</h3>
+        <h3>Sign up azienda</h3>
         <h3>{{emailf}}</h3>
-        <form method="post" >
+        <form method="post">
           <div class="control-group form-group">
             <div class="controls">
-              {{ regiterForm.name.label  }}
-                {{ regiterForm.name(class='form-control')  }}
-                {% for error in regiterForm.name.errors %}
+              {{ regiterFormFirm.emailf.label  }}
+                {{ regiterFormFirm.emailf(class='form-control')  }}
+                {% for error in regiterFormFirm.emailf.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor  %}
                 <p class="help-block"></p>
@@ -24,18 +24,18 @@
           </div>
           <div class="control-group form-group">
             <div class="controls">
-               {{ regiterForm.familyname.label  }}
-                {{ regiterForm.familyname(class='form-control')  }}
-                {% for error in regiterForm.familyname.errors %}
+               {{ regiterFormFirm.namef.label  }}
+                {{ regiterFormFirm.namef(class='form-control')  }}
+                {% for error in regiterFormFirm.namef.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor  %}
             </div>
           </div>
           <div class="control-group form-group">
             <div class="controls">
-              {{ regiterForm.usern.label  }}
-                {{ regiterForm.usern(class='form-control')  }}
-                {% for error in regiterForm.usern.errors %}
+              {{ regiterFormFirm.passwordf.label  }}
+                {{ regiterFormFirm.passwordf(class='form-control')  }}
+                {% for error in regiterFormFirm.passwordf.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor  %}
                 <p class="help-block"></p>
@@ -43,27 +43,27 @@
           </div>
           <div class="control-group form-group">
             <div class="controls">
-              {{ regiterForm.email.label  }}
-                {{ regiterForm.email(class='form-control') }}
-                {% for error in regiterForm.email.errors %}
+              {{ regiterFormFirm.nemployees.label  }}
+                {{ regiterFormFirm.nemployees(class='form-control') }}
+                {% for error in regiterFormFirm.nemployees.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor  %}
             </div>
           </div>
           <div class="control-group form-group">
             <div class="controls">
-                 {{ regiterForm.password.label }}
-                {{ regiterForm.password(class='form-control') }}
-                {% for error in regiterForm.password.errors %}
+                 {{ regiterFormFirm.piva.label }}
+                {{ regiterFormFirm.piva(class='form-control') }}
+                {% for error in regiterFormFirm.piva.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor  %}
             </div>
           </div>
           <div class="control-group form-group">
             <div class="controls">
-              {{ regiterForm.isee.label  }}
-                {{ regiterForm.isee(class='form-control')  }}
-                {% for error in regiterForm.isee.errors %}
+              {{ regiterFormFirm.sector.label  }}
+                {{ regiterFormFirm.sector(class='form-control')  }}
+                {% for error in regiterFormFirm.sector.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor  %}
                 <p class="help-block"></p>
@@ -71,38 +71,19 @@
           </div>
           <div class="control-group form-group">
             <div class="controls">
-              {{ regiterForm.age.label  }}
-                {{ regiterForm.age(class='form-control') }}
-                {% for error in regiterForm.age.errors %}
+              {{ regiterFormFirm.fatturato.label  }}
+                {{ regiterFormFirm.fatturato(class='form-control') }}
+                {% for error in regiterFormFirm.fatturato.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor  %}
                 <p class="help-block"></p>
             </div>
           </div>
-          <div class="control-group form-group">
-            <div class="controls">
-              {{ regiterForm.profession.label  }}
-                {{ regiterForm.profession(class='form-control')  }}
-                {% for error in regiterForm.profession.errors %}
-                    <div class="alert alert-danger">{{ error }}</div>
-                {% endfor  %}
-                <p class="help-block"></p>
-            </div>
-          </div>
-          <div class="control-group form-group">
-            <div class="controls">
-              {{ regiterForm.number_child.label  }}
-                {{ regiterForm.number_child(class='form-control')  }}
-                {% for error in regiterForm.number_child.errors %}
-                    <div class="alert alert-danger">{{ error }}</div>
-                {% endfor  %}
-                <p class="help-block"></p>
-            </div>
-          </div>
+
           <div id="success"></div>
           <!-- For success/fail messages -->
-        {{ regiterForm.submit(class='btn btn-primary') }}
-            {{ regiterForm.hidden_tag() }}
+        {{ regiterFormFirm.submit(class='btn btn-primary') }}
+            {{ regiterFormFirm.hidden_tag() }}
         </form>
       </div>
 

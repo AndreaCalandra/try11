@@ -1,0 +1,24 @@
+{% extends "layoutChat.html" %}
+
+{% block question %}
+      <div class="titleBlock"><h1 style="text-align: center" class="titleText">QUESTION</h1><div class="titleAnswer"></div></div>
+
+         <hr>
+            <button onclick="location.href='/Newquestion'" class="btn btn-secondary btn-lg" >Add Another Question</button>
+         <hr>
+         <br>
+         <table class="table table-dark table-striped">
+                <tr>
+                    <th><p>NAME</p></th>
+                    <th><p>QUESTION</p></th>
+                </tr>
+             {% for item in values %}
+                <tr>
+                    <td><p class="attributes">{{ item.username }}</p></td>
+                    <td><p><a style="text-transform: uppercase" href="answer/{{ item._id }}">{{ item.question }}</a></p></td>
+                </tr>
+             {% endfor %}
+         </table>
+
+
+{%  endblock %}

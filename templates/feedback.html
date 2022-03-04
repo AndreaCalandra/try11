@@ -1,0 +1,29 @@
+
+{% extends "layoutfeedback.html" %}
+
+{% block content %}
+    <div class="titleBlock"><h1 style="text-align: center" class="titleText">NEW FEEDBACK</h1><div class="titlefeedback"></div></div>
+         <hr>
+            <button onclick="location.href='/newFeedback'" class="btn btn-secondary btn-lg" >Add Another Feedback</button>
+         <hr>
+         <br>
+
+         <table class="table table-dark table-striped">
+                <tr>
+                    <th><p>USERNAME</p></th>
+                    <th><p>FEEDBACK</p></th>
+                </tr>
+            {% for item in values %}
+                <tr>
+                    <td>
+                        <p>{{ item.username }}</p>
+                    </td>
+                    <td>
+                        <p style="text-transform: uppercase">{{ item.feedback }}</p>
+                    </td>
+                </tr>
+            {% endfor %}
+         </table>
+
+
+{%  endblock %}

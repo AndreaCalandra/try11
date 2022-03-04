@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+{% extends "layoutChat.html" %}
+{% block title %}NEW ANSWER{% endblock %}
+{% block question %}
+
+    <div class="titleBlock"><h1 style="text-align: center" class="titleText">ANSWER</h1><div class="titleAnswer"></div></div>
+
+         <hr>
+            <button onclick="location.href='/question'" class="btn btn-secondary btn-lg">Back to Questions</button>
+         <hr>
+         <br>
+         <div class="question">
+             <p>NAME : {{ item.username }}</p>
+             <p>QUESTION : {{ item.question }}</p>
+         </div>
+             <br>
+         <table class="table table-dark table-striped">
+
+           <tr>
+               <td><p>NAME</p></td>
+               <td><p>ANSWER</p></td>
+           </tr>
+     {% for ans in answers %}
+           <tr>
+                <td><p>{{ ans.userAnswer }}</p></td>
+                <td><p>{{ ans.answer }} </p></td>
+           </tr>
+            {% endfor %}
+         </table>
+<p>
+    <br>
+    <h2>ADD YOUR ANSWER</h2>
+    <hr>
+ <form action="/NewAnswer" method="POST" class="form_feedback">
+
+
+                    <h2 class="h2_feedback" style="text-align: center">complete the following form to enter a new answer</h2>
+                    <div class="form-group">
+                        <label class="attributes">Username</label>
+                        <br>
+                         <input type="text" class="form-control" id="username" name="userAnswer" placeholder="Select a username">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="attributes">Answer</label>
+                        <br>
+                        <textarea class="form-control" id="AnswerTextArea" rows="3" name="answer" placeholder="Enter your answer" rows="3"></textarea>
+                    </div>
+                    <input type="hidden" name="idQ" value="{{ item._id }}">
+                    <br>
+                    <button type="submit" class="btn btn-primary btn-lg">Submit your answer</button>
+
+
+                </form>
+
+</p>
+
+{%  endblock %}

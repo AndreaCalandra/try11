@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, IntegerField, DateField
-from wtforms.validators import DataRequired, Email, Length, ValidationError
+from wtforms import StringField, SubmitField, PasswordField, IntegerField, DateField, BooleanField
+from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
 import email_validator
 from model import User
 
@@ -11,7 +11,8 @@ class formRegisteration(FlaskForm):
     familyname = StringField('Family Name',validators=[DataRequired(),Length(min=3,max=25)])
     usern = StringField('Usern', validators=[DataRequired()])
     email = StringField('Email',validators=[DataRequired(),Email()])
-    password = PasswordField('password',validators=[DataRequired(),Length(min=6,max=20)])
+    password = PasswordField('Password',validators=[DataRequired(),Length(min=8,max=20)])
+ #   password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('Password')])
     isee = IntegerField('isee', validators=[DataRequired()])
     age = IntegerField('age', validators=[DataRequired()])
     profession = StringField('profession', validators=[DataRequired()])
@@ -25,8 +26,9 @@ class formRegisteration(FlaskForm):
 
 
 class loginForm(FlaskForm):
-    username = StringField('Name',validators=[DataRequired(),Email()])
-    password = PasswordField('Password',validators=[Length(min=3,max=15),DataRequired()])
+    username = StringField('Email',validators=[DataRequired(),Email()])
+    password = PasswordField('Password',validators=[Length(min=8,max=20),DataRequired()])
+    remember_me = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
 
@@ -72,7 +74,7 @@ class EditProfileForm(FlaskForm):
 class firmformRegisteration(FlaskForm):
     emailf = StringField('Email', validators=[DataRequired(), Email()])
     namef = StringField('Name',validators=[DataRequired(),Length(min=3,max=25)])
-    passwordf = PasswordField('Password',validators=[DataRequired(),Length(min=6,max=20)])
+    passwordf = PasswordField('Password',validators=[DataRequired(),Length(min=8,max=20)])
     nemployees = IntegerField('Number of employees', validators=[DataRequired()])
     piva = IntegerField('Partita iva', validators=[DataRequired()])
     sector = StringField('Sector',validators=[DataRequired(),Length(min=3,max=25)])
@@ -81,6 +83,6 @@ class firmformRegisteration(FlaskForm):
 
 
 class firmloginForm(FlaskForm):
-    piva = StringField('partita iva',validators=[DataRequired(),Email()])
-    passwordf = PasswordField('Password',validators=[Length(min=3,max=15),DataRequired()])
+    piva = IntegerField('piva',validators=[DataRequired()])
+    passwordf = PasswordField('Password',validators=[Length(min=8,max=20),DataRequired()])
     submit = SubmitField('Login')

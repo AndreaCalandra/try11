@@ -7,14 +7,14 @@
 
     <div class="row">
       <div class="col-lg-8 mb-4">
-        <h3>Login</h3>
+        <h3>Login Azienda</h3>
         <form method="post" >
           <div class="control-group form-group">
             <div class="controls">
-                {{ login_form.username.label  }}
-                 {{ login_form.username(class='form-control') }}
+                {{ login_form.piva.label  }}
+                 {{ login_form.piva(class='form-control') }}
 
-              {% for error in login_form.username.errors %}
+              {% for error in login_form.piva.errors %}
                 <div class="alert alert-danger" role="alert">
 
                   {{ error }}
@@ -25,9 +25,9 @@
           </div>
          <div class="control-group form-group">
             <div class="controls">
-              {{ login_form.password.label  }}
-                {{ login_form.password(class='form-control') }}
-                 {% for error in login_form.password.errors %}
+              {{ login_form.passwordf.label  }}
+                {{ login_form.passwordf(class='form-control') }}
+                 {% for error in login_form.passwordf.errors %}
                 <p class="alert alert-danger" role="alert">
 
                   {{ error }}

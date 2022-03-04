@@ -9,8 +9,7 @@
     <!-- In order to set the email address and subject line for the contact form go to the bin/contact_me.php file. -->
     <div class="row">
       <div class="col-lg-8 mb-4">
-        <h3>Register Form in database</h3>
-        <h3>{{name}}</h3>
+        <h2>Sign up</h2>
         <form method="post" >
           <div class="control-group form-group">
             <div class="controls">
@@ -52,7 +51,7 @@
           </div>
           <div class="control-group form-group">
             <div class="controls">
-                 {{ regiterForm.password.label }}
+                {{ regiterForm.password.label }} <a style="font-size: 80%; color: #4e555b">(Must be 8-20 characters long)</a>
                 {{ regiterForm.password(class='form-control') }}
                 {% for error in regiterForm.password.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
@@ -92,7 +91,7 @@
           <div class="control-group form-group">
             <div class="controls">
               {{ regiterForm.number_child.label  }}
-                {{ regiterForm.number_child(class='form-control')  }}
+                {{ regiterForm.number_child(class='form-control') }}
                 {% for error in regiterForm.number_child.errors %}
                     <div class="alert alert-danger">{{ error }}</div>
                 {% endfor  %}

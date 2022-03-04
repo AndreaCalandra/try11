@@ -14,19 +14,28 @@ app = Flask(__name__)
 #login.login_view = 'login'
 
 app.config['SECRET_KEY'] = 'sssdhgclshfsh;shd;jshjhsjhjhsjldchljk'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new1.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new4.db'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # EMAIL config
-app.config['MAIL_USERNAME']="" #os.environ['EMAIL_USERNAME']
-app.config['MAIL_PASSWORD']=""
-app.config['MAIL_TLS']=True
-app.config['MAIL_SERVER']='smtp.mail.com'
-app.config['MAIL_PORT']=587
+# app.config['MAIL_USERNAME']="" #os.environ['EMAIL_USERNAME']
+# app.config['MAIL_PASSWORD']=""
+# app.config['MAIL_TLS']=True
+# app.config['MAIL_SERVER']='smtp.mail.com'
+# app.config['MAIL_PORT']=587
 
-app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
-app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <flasky@example.com>'
+# app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
+# app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <flasky@example.com>'
+
+MAX_CONTENT_PATH = '5120'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+
+
 
 picFolder = os.path.join('static', 'images')
 app.config['UPLOAD_FOLDER'] = picFolder
@@ -47,7 +56,7 @@ login_manager.login_view = 'login'
 
 
 
-from model import User, Firm, Role
+from model import User, Firm, Role, feeds, questions, answers
 from form import formRegisteration, loginForm, EditProfileForm, firmformRegisteration, firmloginForm
 
 #EMAIL code
@@ -75,7 +84,10 @@ def setup_db():
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    if session['user']:
+        return User.query.get(int(user_id))
+    else:
+        return Firm.query.get(int(user_id))
 
 
 
@@ -85,15 +97,13 @@ def regiterPagedb():
     regiterForm = formRegisteration()
     if regiterForm.validate_on_submit():
         role_name = Role.query.filter_by(role_name="User").first()
-        name = regiterForm.name.data
-        usern = regiterForm.usern.data
         session['name'] = regiterForm.name.data
         session['email'] = regiterForm.email.data
         session['usern'] = regiterForm.usern.data
         session['isee'] = regiterForm.isee.data
         session['age'] = regiterForm.age.data
         session['profession'] = regiterForm.profession.data
-        session['number_child'] = regiterForm.number_child.data
+        session['number_child'] = regiterForm.number_child
         password_2 = bcrypt.generate_password_hash(regiterForm.password.data).encode('utf-8')
         newuser = User(name=regiterForm.name.data, usern=regiterForm.usern.data, username=regiterForm.email.data,
                        password=password_2, isee=regiterForm.isee.data, age=regiterForm.age.data,
@@ -112,13 +122,19 @@ def regiterPagedb():
         # msg.body = "Hello Flask message sent from Flask-Mail"
         # mail.send(msg)
 
-        send_mail('andrea.calandra99@gmail.com', "New User!", "mail", username=usern)
+        #send_mail('andrea.calandra99@gmail.com', "New User!", "mail", username=usern)
 
         #mail.send(msg)
 
-        flash('successo')
+        # msg = Message('CONTACT US',
+        #               sender='jonpolito2018@gmail.com',
+        #               recipients=['andrea.calandra99@gmail.com'])
+        # msg.body = 'ciao'
+        # mail.send(msg)
+
         return redirect(url_for('login'))
-    return render_template('register-db.html', regiterForm=regiterForm, name_website='SQL Registration to IS 2020 Platform', name=name)
+
+    return render_template('register-db.html', regiterForm=regiterForm, name=name)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -135,8 +151,17 @@ def login():
             session['age'] = user_info.age
             session['profession'] = user_info.profession
             session['number_child'] = user_info.number_child
+            session['user'] = True
+
+            #if login_form.remember_me:
+                #set coocke TODO
+
             login_user(user_info)
             return redirect('dashboard')
+
+        else:
+            flash("errore")
+            return render_template('login.html', login_form=login_form)
 
     return render_template('login.html', login_form=login_form)
 
@@ -164,9 +189,15 @@ def dashboard():
 @app.route('/logout')
 @login_required
 def logout():
-    session.clear()
-    logout_user()
-    return redirect(url_for('login'))  # =>redirect(index)
+    if session['user']:
+        session.clear()
+        logout_user()
+        return redirect(url_for('login'))
+    else:
+        session.clear()
+        logout_user()
+        return redirect(url_for('firmlogin'))
+
 
 
 @app.route('/editProfile', methods=['GET', 'POST'])
@@ -226,6 +257,9 @@ def account_details():
                     user.profession = v.rstrip()
                 if k == 'update_number_child':
                     user.number_child = v.rstrip()
+                if k == 'update_password':
+                    p = bcrypt.generate_password_hash(v.rstrip()).encode('utf-8')
+                    user.password = p
             db.session.commit()
             return redirect(url_for('account_details'))
     return render_template('account_details.html', user_details=user_details)
@@ -244,67 +278,196 @@ def index():
 
 
 
-# @app.route('/firmsignup', methods=['POST', 'GET'])
-# def regiterPagedbFirm():
-#     name = None
-#     regiterForm = firmformRegisteration()
-#     if regiterForm.validate_on_submit():
-#         name = regiterForm.name.data
-#         session['emailf'] = regiterForm.emailf.data
-#         session['namef'] = regiterForm.namef.data
-#         password_2 = bcrypt.generate_password_hash(regiterForm.passwordf.data).encode('utf-8')
-#         session['nemployees'] = regiterForm.nemployees.data
-#         session['piva'] = regiterForm.piva.data
-#         session['sector'] = regiterForm.sector.data
-#         session['fatturato'] = regiterForm.fatturato.data
-#                         newfirm = Firm(emailf=regiterForm.emailf.data, namef=regiterForm.namef.data, nemployees=regiterForm.nemployees.data,
-#                        password=password_2, piva=regiterForm.piva.data, sector=regiterForm.sector.data,
-#                        fatturato=regiterForm.fatturato.data)
-#         db.session.add(newfirm)
-#         db.session.commit()
-#         #send_mail(regiterForm.email.data,"Welcome to BON-U$, registration successful ","mail",username=usern)
-#
-#         msg = Message("Hello",
-#                       sender="bonus@gmail.com",
-#                       recipients=["andrea.calandra99@gmail.com"])
-#         msg.body = "hi"
-#         msg.html = "<h1>test</h1>"
-#
-#         #mail.send(msg)
-#
-#         flash('successo')
-#         return redirect(url_for('firmlogin'))
-#
-#     return render_template('register-dbfirm.html', regiterForm=regiterForm, name_website='SQL Registration to IS 2020 Platform')
-#
-#
-# @app.route('/firmlogin', methods=['POST', 'GET'])
-# def login():
-#     login_form = firmloginForm()
-#     if login_form.validate_on_submit():
-#         firm_info = Firm.query.filter_by(piva=login_form.piva.data).first()
-#         if firm_info and bcrypt.check_password_hash(firm_info.passwordf, login_form.passwordf.data):
-#             session['user_id'] = user_info.id
-#             session['name'] = user_info.name
-#             session['email'] = user_info.username
-#             session['usern'] = user_info.usern
-#             session['isee'] = user_info.isee
-#             session['age'] = user_info.age
-#             session['profession'] = user_info.profession
-#             session['number_child'] = user_info.number_child
-#
-#             session['emailf'] = firm_info.emailf
-#             session['namef'] = firm_info.namef
-#             session['nemployees'] = firm_info.nemployees
-#             session['piva'] = firm_info.piva
-#             session['sector'] = firm_info.sector
-#             session['fatturato'] = firm_info.fatturato
-#
-#             login_user(firm_info)
-#             return redirect('dashboardfirm')
-#
-#     # return render_template('firmlogin.html', login_form=login_form)
+@app.route('/firmsignup', methods=['POST', 'GET'])
+def regiterPagedbFirm():
+    name = None
+    regiterFormFirm = firmformRegisteration()
+    if regiterFormFirm.validate_on_submit():
+        role_name = Role.query.filter_by(role_name="User").first()
+        name = regiterFormFirm.namef.data
+        session['emailf'] = regiterFormFirm.emailf.data
+        session['namef'] = regiterFormFirm.namef.data
+        password_2 = bcrypt.generate_password_hash(regiterFormFirm.passwordf.data).encode('utf-8')
+        session['nemployees'] = regiterFormFirm.nemployees.data
+        session['piva'] = regiterFormFirm.piva.data
+        session['sector'] = regiterFormFirm.sector.data
+        session['fatturato'] = regiterFormFirm.fatturato.data
+        newfirm = Firm(emailf=regiterFormFirm.emailf.data, namef=regiterFormFirm.namef.data, nemployees=regiterFormFirm.nemployees.data,
+                       passwordf=password_2, piva=regiterFormFirm.piva.data, sector=regiterFormFirm.sector.data,
+                       fatturato=regiterFormFirm.fatturato.data, role_name=role_name)
+        db.session.add(newfirm)
+        db.session.commit()
 
+        return redirect(url_for('firmlogin'))
+
+    return render_template('register-dbfirm.html', regiterFormFirm=regiterFormFirm, name=name)
+
+
+@app.route('/firmlogin', methods=['POST', 'GET'])
+def firmlogin():
+    login_form = firmloginForm()
+    if login_form.validate_on_submit():
+        firm_info = Firm.query.filter_by(piva=login_form.piva.data).first()
+        if firm_info and bcrypt.check_password_hash(firm_info.passwordf, login_form.passwordf.data):
+            session['emailf'] = firm_info.emailf
+            session['namef'] = firm_info.namef
+            session['nemployees'] = firm_info.nemployees
+            session['piva'] = firm_info.piva
+            session['sector'] = firm_info.sector
+            session['fatturato'] = firm_info.fatturato
+            session['user'] = False
+
+            login_user(firm_info)
+            return redirect('dashboardfirm')
+
+    return render_template('firmlogin.html', login_form=login_form)
+
+
+@app.route('/dashboardfirm')
+@login_required
+def dashboardfirm():
+    if session.get('emailf'):
+        namef = session.get('namef')
+        nemployees = session.get('nemployees')
+        fatturato = session.get('fatturato')
+        sector = session.get('sector')
+        piva = session.get('piva')
+        pic_profile = os.path.join(app.config['UPLOAD_FOLDER'], 'avatardefault.png')
+        pic_isee = os.path.join(app.config['UPLOAD_FOLDER'], 'isee.jpg')
+        pic_job = os.path.join(app.config['UPLOAD_FOLDER'], 'job.jpg')
+        pic_children = os.path.join(app.config['UPLOAD_FOLDER'], 'rev.jpg')
+        return render_template('profilefirm.html', user_image = pic_profile, namef = namef, user_isee = pic_isee,
+                               user_job = pic_job, user_children = pic_children, nemployees = nemployees, fatturato = fatturato,
+                               sector = sector, piva = piva)
+    else:
+        return redirect(url_for('firmlogin'))
+
+
+@app.route('/account_detailsf', methods=['GET', 'POST'])
+@login_required
+def account_detailsf():
+    if current_user.is_authenticated:
+        user_details = current_user.firm_variables()
+        user = Firm.query.filter_by(id=current_user.id).first()
+        if request.method == 'POST':
+            updated_values_dict = request.form.to_dict()
+            for k, v in updated_values_dict.items():
+                # TODO validation checks
+                # TODO password change
+                # The 'name' paramater in each form-control is jinja template of
+                # update_{{user_details[key][0]}} hence the check for k == 'update_' etc.
+                if k == 'update_emailf':
+                    user.emailf = v.rstrip()
+                if k == 'update_namef':
+                    user.namef = v.rstrip()
+                if k == 'update_nemployees':
+                    user.nemployees = v.rstrip()
+                if k == 'update_piva':
+                    user.piva = v.rstrip()
+                if k == 'update_sector':
+                    user.sector = v.rstrip()
+                if k == 'update_fatturato':
+                    user.fatturato = v.rstrip()
+            db.session.commit()
+            return redirect(url_for('account_detailsf'))
+    return render_template('account_detailsf.html', user_details=user_details)
+
+@app.route('/404')
+def notfound():
+    pic = os.path.join(app.config['UPLOAD_FOLDER'], '404.png')
+    return render_template('404.html', image=pic)
+
+@app.route('/feedback')
+def feedback():
+    return render_template('feedback.html', values=feeds.query.all())
+
+@app.route('/newFeedback', methods=["POST", "GET"])
+def newFeedback():
+    if request.method == "POST":
+        username = request.form['username']
+        if username == "" :
+            flash("To submit correctly your feedback add your username")
+            return redirect(request.url)
+
+        feedback = request.form['feedback']
+        if feedback == "" :
+            flash("To submit correctly your feedback add your feedback")
+            return redirect(request.url)
+
+        feed = feeds(username, feedback)
+        db.session.add(feed)
+        db.session.commit()
+        return redirect('feedback')
+    else:
+        return render_template('newFeedback.html')
+
+@app.route('/Newquestion' , methods=["POST", "GET"])
+def Newquestion():
+    if request.method == "POST":
+        username = request.form['username']
+        if username == "" :
+            flash("To submit correctly your question add your username")
+            return redirect(request.url)
+
+        ques = request.form['question']
+        if ques == "" :
+            flash("To submit correctly your questio add the question")
+            return redirect(request.url)
+
+        q = questions(username, ques)
+        db.session.add(q)
+        db.session.commit()
+        return redirect('question')
+    else:
+        return render_template('question.html')
+
+@app.route('/question' , methods=["POST", "GET"])
+def question():
+    query = questions.query.all()
+    return render_template('questions.html', values= query)
+
+@app.route('/answer/<int:question_id>')
+def answer(question_id):
+    if request.method == "POST":
+        userAnswer = request.form['userAnswer']
+        if userAnswer == "" :
+            flash("To submit correctly your answer add your username")
+            return redirect(request.url)
+        ans = request.form['answer']
+        if ans == "" :
+            flash("To submit correctly your answer add the answer")
+            return redirect(request.url)
+
+        idQ = request.form['idQ']
+        a = answers(idQ, userAnswer, ans)
+        db.session.add(a)
+        db.session.commit()
+    query = questions.query.filter_by(_id=question_id).first()
+    queryAns = answers.query.filter_by(idQ=question_id).all()
+    return render_template( 'answer.html', item=query, answers=queryAns)
+
+@app.route('/NewAnswer' , methods=["POST", "GET"])
+def NewAnswer():
+    if request.method == "POST":
+        idQ = request.form['idQ']
+        userAnswer = request.form['userAnswer']
+        if userAnswer == "" :
+            flash("To submit correctly your answer add your username")
+            return redirect('/answer/'+idQ)
+        ans = request.form['answer']
+        if ans == "" :
+            flash("To submit correctly your answer add the answer")
+            return redirect('/answer/'+idQ)
+
+
+        a = answers(idQ, userAnswer, ans)
+        db.session.add(a)
+        db.session.commit()
+        query = questions.query.filter_by(_id=request.form['idQ']).first()
+        queryAns = answers.query.filter_by(idQ=request.form['idQ']).all()
+        return render_template('/answer.html', item=query, answers=queryAns)
+    else:
+        return render_template('question.html')
 
 if __name__ == '__main__':
     app.run()
