@@ -1,0 +1,120 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+
+
+<div class="row">
+      <div class="col-lg-8 mb-4">
+        <h3>Add Bonus</h3>
+
+
+
+
+       <form method="post" >
+          <div class="control-group form-group">
+            <div class="controls">
+            <table class="table table-dark table-striped">
+           <tr>
+               <td>{{ bonus_form.titolo.label  }} </td> </tr>
+                   {{ bonus_form.titolo(class='form-control')  }}
+                {% for error in bonus_form.titolo.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+                <p class="help-block"></p>
+            </div>
+          </div> </tr>
+          <div class="control-group form-group">
+            <div class="controls">
+               {{ bonus_form.descrizione.label  }}
+                {{ bonus_form.descrizione(class='form-control')  }}
+                {% for error in bonus_form.descrizione.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+          <div class="control-group form-group">
+            <div class="controls">
+              {{ bonus_form.iseemin.label  }}
+                {{ bonus_form.iseemin(class='form-control') }}
+                {% for error in bonus_form.iseemin.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+          <div class="control-group form-group">
+            <div class="controls">
+                 {{ bonus_form.iseemax.label }}
+                {{ bonus_form.iseemax(class='form-control') }}
+                {% for error in bonus_form.iseemax.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+        <div class="control-group form-group">
+            <div class="controls">
+              {{ bonus_form.agemax.label  }}
+                {{ bonus_form.agemax(class='form-control') }}
+                {% for error in bonus_form.agemax.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+        <div class="control-group form-group">
+            <div class="controls">
+              {{ bonus_form.agemin.label  }}
+                {{ bonus_form.agemin(class='form-control') }}
+                {% for error in bonus_form.agemin.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+        <div class="control-group form-group">
+            <div class="controls">
+              {{ bonus_form.maxfigli.label  }}
+                {{ bonus_form.maxfigli(class='form-control') }}
+                {% for error in bonus_form.maxfigli.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+
+        <div class="control-group form-group">
+            <div class="controls">
+              {{ bonus_form.minfigli.label  }}
+                {{ bonus_form.minfigli(class='form-control') }}
+                {% for error in bonus_form.minfigli.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+
+        <div class="control-group form-group">
+            <div class="controls">
+              {{ bonus_form.professione.label  }}
+                {{ bonus_form.professione(class='form-control') }}
+                {% for error in bonus_form.professione.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+          <div id="success"></div>
+          <!-- For success/fail messages -->
+        {{ bonus_form.submit(class='btn btn-primary') }}
+            {{ bonus_form.hidden_tag() }}
+        </form> </tr>
+</table>
+      </div>
+
+    </div>
+
+    <!-- /.row -->
+{% endblock content %}

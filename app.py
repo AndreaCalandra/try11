@@ -9,31 +9,39 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 app = Flask(__name__)
 
+
 #login = LoginManager(app)
 #login.init_app(app)
 #login.login_view = 'login'
 
 app.config['SECRET_KEY'] = 'sssdhgclshfsh;shd;jshjhsjhjhsjldchljk'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new5.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new6.db'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 # EMAIL config
 # app.config['MAIL_USERNAME']="" #os.environ['EMAIL_USERNAME']
 # app.config['MAIL_PASSWORD']=""
 # app.config['MAIL_TLS']=True
 # app.config['MAIL_SERVER']='smtp.mail.com'
 # app.config['MAIL_PORT']=587
-
 # app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
 # app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <flasky@example.com>'
+#MAX_CONTENT_PATH = '5120'
+# app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+# app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+# app.config['MAIL_USERNAME'] = 'bon.us.polito@gmail.com'
+# app.config['MAIL_PASSWORD'] = 'Bon-U$2022'
+# app.config['MAIL_TLS']=True
+# app.config['MAIL_SERVER']='smtp.mail.com'
+# app.config['MAIL_PORT']=587
 
-MAX_CONTENT_PATH = '5120'
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_USERNAME'] = 'bon.us.polito@gmail.com'
+app.config['MAIL_PASSWORD'] = 'Bon-U$2022'
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_PORT'] = 587
+
+mail = Mail(app)
 
 
 
@@ -43,7 +51,7 @@ app.config['UPLOAD_FOLDER'] = picFolder
 
 
 db = SQLAlchemy(app)
-mail = Mail(app)
+
 bcrypt = Bcrypt(app)
 #db.create_all()
 #os.chdir("try11\static")
@@ -55,15 +63,14 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 
-
-from model import User, Firm, Role, feeds, questions, answers
-from form import formRegisteration, loginForm, EditProfileForm, firmformRegisteration, firmloginForm
+import model
+from model import User, Firm, Role, feeds, questions, answers, Bonus
+from form import formRegisteration, loginForm, EditProfileForm, firmformRegisteration, firmloginForm, bonusForm, SearchForm
 
 #EMAIL code
-def send_mail(to,subject,template,**kwargs):
-    msg=Message(subject,recipients=[to],sender=app.config['MAIL_USERNAME'])
-    #msg.body= render_template(template + '.txt',**kwargs)
-    msg.html= render_template(template + '.html',**kwargs)
+def send_mail(to,subject):
+    msg=Message(subject,recipients=[to],sender='bon.us.polito@gmail.com')
+    msg.body= 'Benvenuto'
     mail.send(msg)
 
 @app.before_first_request
@@ -77,8 +84,9 @@ def setup_db():
     #                  age=0, profession="", number_child=0, role_name=role_admin)
     db.session.add_all([role_admin, role_user])
     #db.session.add(user_admin)
-    db.session.commit()
+    #db.session.commit()
     #db.create_all()
+
 
 
 
@@ -110,7 +118,14 @@ def regiterPagedb():
                        profession=regiterForm.profession.data, number_child=regiterForm.number_child.data, role_name=role_name)
         db.session.add(newuser)
         db.session.commit()
-        #send_mail(regiterForm.email.data,"Welcome to BON-U$, registration successful ","mail",username=usern)
+
+        with app.app_context():
+            msg = Message("Benvenuto",
+                          sender="bon.us.polito@gmail.com",
+                          recipients=[regiterForm.email.data])
+            msg.html = render_template('mailReg.html')
+            mail.send(msg)
+        #send_mail(regiterForm.email.data,"Welcome to BON-U$")
 
         # msg = Message("Hello",
         #               sender="bonus@gmail.com",
@@ -295,6 +310,13 @@ def regiterPagedbFirm():
         db.session.add(newfirm)
         db.session.commit()
 
+        with app.app_context():
+            msg = Message("Hello",
+                          sender="bon.us.polito@gmail.com",
+                          recipients=[regiterFormFirm.emailf.data])
+            msg.html = render_template('mailReg.html')
+            mail.send(msg)
+
         return redirect(url_for('firmlogin'))
 
     return render_template('register-dbfirm.html', regiterFormFirm=regiterFormFirm, name=name)
@@ -372,6 +394,17 @@ def account_detailsf():
 @app.route('/404')
 def notfound():
     pic = os.path.join(app.config['UPLOAD_FOLDER'], '404.png')
+
+    with app.app_context():
+
+        msg = Message("Hello",
+                      sender="bon.us.polito@gmail.com",
+                      recipients=["andrea.calandra99@gmail.com",
+                                  "sebastianodelnegro@gmail.com",
+                                  "sordellosimone@gmail.com"])
+        msg.html = render_template('mailReg.html')
+        mail.send(msg)
+
     return render_template('404.html', image=pic)
 
 @app.route('/feedback')
@@ -414,7 +447,8 @@ def Newquestion():
         q = questions(username, ques)
         db.session.add(q)
         db.session.commit()
-        return redirect('question')
+        u = session['usern']
+        return redirect('question', u=u)
     else:
         return render_template('question.html')
 
@@ -465,6 +499,81 @@ def NewAnswer():
         return render_template('/answer.html', item=query, answers=queryAns)
     else:
         return render_template('question.html')
+
+
+@app.route('/addbonus', methods=['POST', 'GET'])
+@login_required
+def addbonus():
+    if session['email'] == 'andrea.calandra99@gmail.com':
+        name = None
+        bonus_form = bonusForm()
+        if bonus_form.validate_on_submit():
+
+            session['titolo'] = bonus_form.titolo
+            session['descrizione'] = bonus_form.descrizione
+            session['iseemin'] = bonus_form.iseemin
+            session['iseemax'] = bonus_form.iseemax
+            session['agemax'] = bonus_form.agemax
+            session['agemin'] = bonus_form.agemin
+            session['maxfigli'] = bonus_form.maxfigli
+            session['minfigli'] = bonus_form.minfigli
+            session['professione'] = bonus_form.professione
+            bonus = Bonus(titolo=bonus_form.titolo.data, descrizione=bonus_form.descrizione.data, iseemin=bonus_form.iseemin.data,
+                   iseemax=bonus_form.iseemax.data, agemax=bonus_form.agemax.data, agemin=bonus_form.agemin.data, maxfigli=bonus_form.maxfigli.data, minfigli=bonus_form.minfigli.data,professione=bonus_form.professione.data)
+            db.session.add(bonus)
+            db.session.commit()
+            flash('successo')
+            return redirect(url_for('dashboard'))
+
+        return render_template('addbonus-db.html', bonus_form=bonus_form, name_website='SQL Bonus to IS 2020 Platform', name=name)
+
+    else:
+        title = 'BON-U$'
+        b1 = os.path.join(app.config['UPLOAD_FOLDER'], 'job.jpg')
+        b2 = os.path.join(app.config['UPLOAD_FOLDER'], 'bonusvacanza.jpg')
+        b3 = os.path.join(app.config['UPLOAD_FOLDER'], 'ecobonus110.jpg')
+        b4 = os.path.join(app.config['UPLOAD_FOLDER'], 'BON-U$.png')
+        b5 = os.path.join(app.config['UPLOAD_FOLDER'], 'BON-U$nosfondo.png')
+        return render_template('index.html', b1 = b1, b2 = b2, b3 = b3, b4 = b4, b5 = b5, title = title)
+
+@app.route('/bonuspage', methods=['POST', 'GET'])
+def search():
+    form = SearchForm()
+
+    parola = form.searched.data
+
+    if parola == None:
+        sbonus = model.Bonus.query.filter(model.Bonus.descrizione.like('%')).all()
+    else:
+        sbonus = model.Bonus.query.filter(model.Bonus.descrizione.like('%'+parola+'%')).all()
+
+    return render_template('search.html', form=form, sbonus=sbonus)
+
+
+@app.route('/bonuspage')
+def bonuspage():
+
+    return render_template('bonuspage.html', values=model.Bonus.query.all())
+
+
+@app.route('/bonusforyou')
+@login_required
+def bonusforyou():
+    name = session['name']
+    email = session['email']
+    username = session['usern']
+    isee = session['isee']
+    age = session['age']
+    profession = session['profession']
+    number_child = session['number_child']
+    user = session['user']
+
+    sbonus = model.Bonus.query.filter((isee >= model.Bonus.iseemin) & (isee <= model.Bonus.iseemax) &
+                                      (age >= model.Bonus.agemin) & (age <= model.Bonus.agemax) &
+                                      ((profession == model.Bonus.professione) | (profession == 'qualsiasi') | (profession == 'Qualsiasi')) &
+                                      (number_child >= model.Bonus.minfigli) & (number_child <= model.Bonus.maxfigli))
+
+    return render_template('bonusforyou.html', values=sbonus)
 
 if __name__ == '__main__':
     app.run()

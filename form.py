@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, IntegerField, DateField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, IntegerField, DateField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
 import email_validator
 from model import User
@@ -86,3 +86,21 @@ class firmloginForm(FlaskForm):
     piva = IntegerField('piva',validators=[DataRequired()])
     passwordf = PasswordField('Password',validators=[Length(min=8,max=20),DataRequired()])
     submit = SubmitField('Login')
+
+
+class bonusForm(FlaskForm):
+    titolo = StringField('Titolo',validators=[DataRequired(),Length(min=3,max=25)])
+    descrizione = TextAreaField('Descrizione del Bonus',validators=[DataRequired(),Length(min=3,max=250)])
+    iseemin = IntegerField('Isee Min',validators=[DataRequired()])
+    iseemax = IntegerField('Isee Max',validators=[DataRequired()])
+    agemax = IntegerField('Age max',validators=[DataRequired()])
+    agemin = IntegerField('Age min',validators=[DataRequired()])
+    maxfigli = IntegerField('Numero massimo di figli',validators=[DataRequired()])
+    minfigli = IntegerField('Numero minimo di figli',validators=[DataRequired()])
+    professione = StringField('Professione', validators=[DataRequired(),Length(min=3,max=25)])
+    submit = SubmitField('Addbonus')
+
+
+class SearchForm(FlaskForm):
+    searched = StringField("Search your Bonus", validators=[DataRequired(), Email()])
+    submit = SubmitField('Search')

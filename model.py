@@ -1,5 +1,6 @@
-from app import db
+from app import db, app
 from flask_login import UserMixin, current_user
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
 class User(db.Model, UserMixin):
@@ -37,12 +38,27 @@ class User(db.Model, UserMixin):
         }
         return user_details
 
+    def get_reset_token(self, expires_sec=1800):
+        s = Serializer(app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'id': self.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['id']
+        except:
+            return None
+        return User.query.get(user_id)
+
+
 class Role(db.Model):
     __tablename__ = "roles"
     id = db.Column(db.Integer, primary_key=True)
     role_name = db.Column(db.String(100), nullable=False)
     users = db.relationship('User', backref='role_name')
     firms = db.relationship('Firm', backref='role_name')
+
 
 class Firm(db.Model, UserMixin):
     __tablename__ = 'firm'
@@ -108,3 +124,22 @@ class answers(db.Model):
         self.idQ = idQ
         self.userAnswer = userAnswer
         self.answer = answer
+
+
+class Bonus(db.Model):
+
+    __tablename__ = 'bonus'
+
+    id = db.Column(db.Integer,primary_key=True)
+    titolo = db.Column(db.String(50), unique=True, nullable=False)
+    descrizione = db.Column(db.String(250), nullable=False)
+    iseemin = db.Column(db.Integer(), nullable=False)
+    iseemax = db.Column(db.Integer(), nullable=False)
+    agemax = db.Column(db.Integer(), nullable=False)
+    agemin = db.Column(db.Integer(), nullable=False)
+    maxfigli = db.Column(db.Integer(), nullable=False)
+    minfigli = db.Column(db.Integer(), nullable=False)
+    professione = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return "<User %r>" % self.name
