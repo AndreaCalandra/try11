@@ -15,7 +15,7 @@ app = Flask(__name__)
 #login.login_view = 'login'
 
 app.config['SECRET_KEY'] = 'sssdhgclshfsh;shd;jshjhsjhjhsjldchljk'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new6.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new9.db'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # EMAIL config
@@ -64,7 +64,7 @@ login_manager.login_view = 'login'
 
 
 import model
-from model import User, Firm, Role, feeds, questions, answers, Bonus
+from model import User, Firm, Role, feeds, questions, answers, Bonus, Mail
 from form import formRegisteration, loginForm, EditProfileForm, firmformRegisteration, firmloginForm, bonusForm, SearchForm
 
 #EMAIL code
@@ -125,27 +125,6 @@ def regiterPagedb():
                           recipients=[regiterForm.email.data])
             msg.html = render_template('mailReg.html')
             mail.send(msg)
-        #send_mail(regiterForm.email.data,"Welcome to BON-U$")
-
-        # msg = Message("Hello",
-        #               sender="bonus@gmail.com",
-        #               recipients=["andrea.calandra99@gmail.com"])
-        # msg.body = "hi"
-        # msg.html = "<h1>test</h1>"
-
-        # msg = Message('Hello', sender='bonus@gmail.com', recipients=['andrea.calandra99@gmail.com'])
-        # msg.body = "Hello Flask message sent from Flask-Mail"
-        # mail.send(msg)
-
-        #send_mail('andrea.calandra99@gmail.com', "New User!", "mail", username=regiterForm.email.data)
-
-        #mail.send(msg)
-
-        # msg = Message('CONTACT US',
-        #               sender='jonpolito2018@gmail.com',
-        #               recipients=['andrea.calandra99@gmail.com'])
-        # msg.body = 'ciao'
-        # mail.send(msg)
 
         return redirect(url_for('login'))
 
@@ -154,29 +133,32 @@ def regiterPagedb():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    login_form = loginForm()
-    if login_form.validate_on_submit():
-        user_info = User.query.filter_by(username=login_form.username.data).first()
-        if user_info and bcrypt.check_password_hash(user_info.password, login_form.password.data):
-            session['user_id'] = user_info.id
-            session['name'] = user_info.name
-            session['email'] = user_info.username
-            session['usern'] = user_info.usern
-            session['isee'] = user_info.isee
-            session['age'] = user_info.age
-            session['profession'] = user_info.profession
-            session['number_child'] = user_info.number_child
-            session['user'] = True
+    if current_user.is_authenticated == False:
+        login_form = loginForm()
+        if login_form.validate_on_submit():
+            user_info = User.query.filter_by(username=login_form.username.data).first()
+            if user_info and bcrypt.check_password_hash(user_info.password, login_form.password.data):
+                session['user_id'] = user_info.id
+                session['name'] = user_info.name
+                session['email'] = user_info.username
+                session['usern'] = user_info.usern
+                session['isee'] = user_info.isee
+                session['age'] = user_info.age
+                session['profession'] = user_info.profession
+                session['number_child'] = user_info.number_child
+                session['user'] = True
 
-            login_user(user_info)
-            return redirect('dashboard')
+                login_user(user_info)
+                return redirect('dashboard')
 
-        else:
-            flash("errore")
-            return render_template('login.html', login_form=login_form)
+            else:
+                flash("errore")
+                return render_template('login.html', login_form=login_form)
 
-    return render_template('login.html', login_form=login_form)
+        return render_template('login.html', login_form=login_form)
 
+    else:
+        return redirect('dashboard')
 
 @app.route('/dashboard')
 @login_required
@@ -324,23 +306,26 @@ def regiterPagedbFirm():
 
 @app.route('/firmlogin', methods=['POST', 'GET'])
 def firmlogin():
-    login_form = firmloginForm()
-    if login_form.validate_on_submit():
-        firm_info = Firm.query.filter_by(piva=login_form.piva.data).first()
-        if firm_info and bcrypt.check_password_hash(firm_info.passwordf, login_form.passwordf.data):
-            session['emailf'] = firm_info.emailf
-            session['namef'] = firm_info.namef
-            session['nemployees'] = firm_info.nemployees
-            session['piva'] = firm_info.piva
-            session['sector'] = firm_info.sector
-            session['fatturato'] = firm_info.fatturato
-            session['user'] = False
+    if current_user.is_authenticated == False:
+        login_form = firmloginForm()
+        if login_form.validate_on_submit():
+            firm_info = Firm.query.filter_by(piva=login_form.piva.data).first()
+            if firm_info and bcrypt.check_password_hash(firm_info.passwordf, login_form.passwordf.data):
+                session['emailf'] = firm_info.emailf
+                session['namef'] = firm_info.namef
+                session['nemployees'] = firm_info.nemployees
+                session['piva'] = firm_info.piva
+                session['sector'] = firm_info.sector
+                session['fatturato'] = firm_info.fatturato
+                session['user'] = False
 
-            login_user(firm_info)
-            return redirect('dashboardfirm')
+                login_user(firm_info)
+                return redirect('dashboardfirm')
 
-    return render_template('firmlogin.html', login_form=login_form)
+        return render_template('firmlogin.html', login_form=login_form)
 
+    else:
+        return redirect('dashboardfirm')
 
 @app.route('/dashboardfirm')
 @login_required
@@ -395,15 +380,15 @@ def account_detailsf():
 def notfound():
     pic = os.path.join(app.config['UPLOAD_FOLDER'], '404.png')
 
-    with app.app_context():
-
-        msg = Message("Hello",
-                      sender="bon.us.polito@gmail.com",
-                      recipients=["andrea.calandra99@gmail.com",
-                                  "sebastianodelnegro@gmail.com",
-                                  "sordellosimone@gmail.com"])
-        msg.html = render_template('mailReg.html')
-        mail.send(msg)
+    # with app.app_context():
+    #
+    #     msg = Message("Hello",
+    #                   sender="bon.us.polito@gmail.com",
+    #                   recipients=["andrea.calandra99@gmail.com",
+    #                               "sebastianodelnegro@gmail.com",
+    #                               "sordellosimone@gmail.com"])
+    #     msg.html = render_template('mailReg.html')
+    #     mail.send(msg)
 
     return render_template('404.html', image=pic)
 
@@ -412,7 +397,9 @@ def feedback():
     return render_template('feedback.html', values=feeds.query.all())
 
 @app.route('/newFeedback', methods=["POST", "GET"])
+@login_required
 def newFeedback():
+    u = session['usern']
     if request.method == "POST":
         username = request.form['username']
         if username == "" :
@@ -429,10 +416,12 @@ def newFeedback():
         db.session.commit()
         return redirect('feedback')
     else:
-        return render_template('newFeedback.html')
+        return render_template('newFeedback.html', u=u)
 
 @app.route('/Newquestion' , methods=["POST", "GET"])
+@login_required
 def Newquestion():
+    u = session['usern']
     if request.method == "POST":
         username = request.form['username']
         if username == "" :
@@ -448,17 +437,20 @@ def Newquestion():
         db.session.add(q)
         db.session.commit()
         u = session['usern']
-        return redirect('question', u=u)
+        return redirect('question')
     else:
-        return render_template('question.html')
+        return render_template('question.html', u=u)
 
 @app.route('/question' , methods=["POST", "GET"])
+@login_required
 def question():
     query = questions.query.all()
     return render_template('questions.html', values= query)
 
 @app.route('/answer/<int:question_id>')
+@login_required
 def answer(question_id):
+    u = session['usern']
     if request.method == "POST":
         userAnswer = request.form['userAnswer']
         if userAnswer == "" :
@@ -475,20 +467,22 @@ def answer(question_id):
         db.session.commit()
     query = questions.query.filter_by(_id=question_id).first()
     queryAns = answers.query.filter_by(idQ=question_id).all()
-    return render_template( 'answer.html', item=query, answers=queryAns)
+    return render_template( 'answer.html', item=query, answers=queryAns, u=u)
 
 @app.route('/NewAnswer' , methods=["POST", "GET"])
+@login_required
 def NewAnswer():
+    u = session['usern']
     if request.method == "POST":
         idQ = request.form['idQ']
         userAnswer = request.form['userAnswer']
         if userAnswer == "" :
             flash("To submit correctly your answer add your username")
-            return redirect('/answer/'+idQ)
+            return redirect('/answer/'+idQ, u=u)
         ans = request.form['answer']
         if ans == "" :
             flash("To submit correctly your answer add the answer")
-            return redirect('/answer/'+idQ)
+            return redirect('/answer/'+idQ, u=u)
 
 
         a = answers(idQ, userAnswer, ans)
@@ -496,9 +490,9 @@ def NewAnswer():
         db.session.commit()
         query = questions.query.filter_by(_id=request.form['idQ']).first()
         queryAns = answers.query.filter_by(idQ=request.form['idQ']).all()
-        return render_template('/answer.html', item=query, answers=queryAns)
+        return render_template('/answer.html', item=query, answers=queryAns, u=u)
     else:
-        return render_template('question.html')
+        return render_template('question.html', u=u)
 
 
 @app.route('/addbonus', methods=['POST', 'GET'])
@@ -574,6 +568,98 @@ def bonusforyou():
                                       (number_child >= model.Bonus.minfigli) & (number_child <= model.Bonus.maxfigli))
 
     return render_template('bonusforyou.html', values=sbonus)
+
+
+@app.route('/contact', methods=['POST', 'GET'])
+@login_required
+def contact():
+    image = os.path.join(app.config['UPLOAD_FOLDER'], 'BeFunky-design.png')
+    u = session['usern']
+    m = session['email']
+    if request.method == "POST":
+        username = request.form['username']
+        if username == "" :
+            flash("To submit correctly your question add your username")
+            return redirect(request.url)
+
+        ques = request.form['question']
+        if ques == "" :
+            flash("To submit correctly your questio add the question")
+            return redirect(request.url)
+
+        with app.app_context():
+
+            msg = Message("Contact us",
+                          sender="bon.us.polito@gmail.com",
+                          recipients=["andrea.calandra99@gmail.com"])   #indirizzo mail dedicato a contact us
+            msg.body = "L'utente "+u+", con indirizzo mail "+m+" ha richiesto: "+ques
+            mail.send(msg)
+
+
+        return redirect('confirm')
+    else:
+        return render_template('contactus.html', u=u)
+
+
+@app.route("/confirm")
+def confirm():
+    image = os.path.join(app.config['UPLOAD_FOLDER'], 'BeFunky-design1.jpg')
+    return render_template('confirm.html', image=image)
+
+
+@app.route("/newsletter", methods=['POST', 'GET'])
+def newsletter():
+    if request.method == "POST":
+        mail = request.form['mail']
+        if mail == "" :
+            flash("Per iscriverti alla newsletter ti serve un indirizzo mail vaildo")
+            return redirect(request.url)
+
+        ma = Mail(mail=mail)
+        db.session.add(ma)
+        db.session.commit()
+
+        return redirect("confirm")
+
+    return render_template("newsletter.html")
+
+
+@app.route('/sendnews', methods=['POST', 'GET'])
+@login_required
+def sendnews():
+    if session['email'] == 'andrea.calandra99@gmail.com':
+
+        if request.method == "POST":
+            ques = request.form['ques']
+            if ques == "":
+                flash("To submit correctly your question add the question")
+                return redirect(request.url)
+
+            with app.app_context():
+
+                all = model.Mail.query.all()
+                s = ''
+                for item in all:
+                    if item.__repr__() == "andrea.calandra99@gmail.com":
+                        s = item.__repr__()
+                    else:
+                        s = s + ", " +item.__repr__()
+                print s
+
+                msg = Message("News Letter",
+                              sender="bon.us.polito@gmail.com",
+                              recipients=[s])  # tutte le mail
+                msg.body = ques
+                mail.send(msg)
+
+            return redirect('confirm')
+        else:
+            return render_template('sendnews.html')
+
+    else:
+        return render_template('404')
+
+
 
 if __name__ == '__main__':
     app.run()

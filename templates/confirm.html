@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+
+
+
+{% block content %}
+
+<!-- Page Content -->
+
+
+  <div class="container">
+  <div class="row">
+    <div class="col">
+
+    </div>
+    <div class="col-8">
+      <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel" style="padding: 5%">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{{image}}" class="d-block w-100" alt="...">
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="col">
+
+    </div>
+  </div>
+
+</div>
+
+  <div class="container" style="margin-bottom: 10%">
+  <div class="row">
+    <div class="col">
+
+    </div>
+    <div class="col">
+      <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='{{ url_for( 'index') }}';">Home</button>
+      <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='{{ url_for( 'contact') }}';">Contattaci</button>
+    </div>
+    <div class="col">
+
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

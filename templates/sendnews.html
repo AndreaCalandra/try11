@@ -1,0 +1,30 @@
+{% extends "layoutChat.html" %}
+
+{% block title %}Newsletter{% endblock %}
+
+{% block question %}
+      <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="titleBlock"><h1 style="text-align: center" class="titleText">INVIA LA MAIL</h1><div class="titleAnswer"></div></div>
+                <br>
+                <hr>
+
+                <form action="/sendnews" method="POST" class="form_feedback">
+                    <h2 class="h2_feedback" style="text-align: center">complete il seguente form per inviare le mail agli iscritti</h2>
+                    <div class="form-group">
+                        <label class="attributes">Email</label>
+                         <input type="textarea" class="form-control" id="ques" name="ques" placeholder="cosa vuoi dire?" >
+                    </div>
+
+                    <br>
+                    <button type="submit" class="btn btn-primary btn-lg">Invia</button>
+
+
+                </form>
+                <hr>
+                <button onclick="location.href='/index.html'" class="btn btn-secondary btn-lg">Home</button>
+            </div>
+        </div>
+    </div>
+{%  endblock %}

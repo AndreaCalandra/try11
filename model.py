@@ -143,3 +143,12 @@ class Bonus(db.Model):
 
     def __repr__(self):
         return "<User %r>" % self.name
+
+
+class Mail(db.Model):
+
+    __tablename__ = 'news'
+    mail = db.Column(db.String(50), nullable=False, primary_key=True)
+
+    def __repr__(self):
+        return  self.mail
