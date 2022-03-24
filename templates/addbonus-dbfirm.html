@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+
+
+<div class="row">
+      <div class="col-lg-8 mb-4">
+      <table class="table table-dark table-striped">
+       <tr>
+
+          <td> <h3>Add Bonus</h3> </td></tr>
+
+        <form method="post" >
+          <div class="control-group form-group">
+            <div class="controls">
+
+           <tr>
+               <td>{{ bonus_formf.titolof.label  }} </td>
+               <td> {{ bonus_formf.titolof(class='form-control')}} </td></tr>
+                {% for error in bonus_formf.titolof.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+                <p class="help-block"></p>
+            </div>
+          </div>
+          <div class="control-group form-group">
+            <div class="controls">
+              <tr>
+               <td> {{ bonus_formf.descrizionef.label  }} </td>
+                <td>{{ bonus_formf.descrizionef(class='form-control')  }} </td></tr>
+                {% for error in bonus_formf.descrizionef.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+          <div class="control-group form-group">
+            <div class="controls">
+             <tr>
+               <td> {{ bonus_formf.nemployeesmin.label  }} </td>
+                <td>{{ bonus_formf.nemployeesmin(class='form-control') }} </td></tr>
+                {% for error in bonus_formf.nemployeesmin.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+          <div class="control-group form-group">
+            <div class="controls">
+               <tr>
+               <td>  {{ bonus_formf.nemployeesmax.label }} </td>
+                <td>{{ bonus_formf.nemployeesmax(class='form-control') }} </td></tr>
+                {% for error in bonus_formf.nemployeesmax.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+
+        <div class="control-group form-group">
+            <div class="controls">
+             <tr>
+               <td> {{ bonus_formf.sector.label  }} </td>
+                <td>{{ bonus_formf.sector(class='form-control') }} </td></tr>
+                {% for error in bonus_formf.sector.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+
+        <div class="control-group form-group">
+            <div class="controls">
+              <tr>
+               <td>{{ bonus_formf.fatturatomin.label  }} </td>
+                <td>{{ bonus_formf.fatturatomin(class='form-control') }} </td></tr>
+                {% for error in bonus_formf.fatturatomin.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+
+        <div class="control-group form-group">
+            <div class="controls">
+             <tr>
+               <td> {{ bonus_formf.fatturatomax.label  }} </td>
+               <td> {{ bonus_formf.fatturatomax(class='form-control') }} </td></tr>
+                {% for error in bonus_formf.fatturatomax.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor  %}
+            <p class="help-block"></p>
+            </div>
+          </div>
+          <div id="success"></div>
+          <!-- For success/fail messages -->
+        <tr>
+               <td>{{ bonus_formf.submit(class='btn btn-primary') }} </td></tr>
+            {{ bonus_formf.hidden_tag() }}
+        </form>
+  </table>
+      </div>
+
+    </div>
+
+    <!-- /.row -->
+{% endblock content %}

@@ -132,7 +132,7 @@ class Bonus(db.Model):
 
     id = db.Column(db.Integer,primary_key=True)
     titolo = db.Column(db.String(50), unique=True, nullable=False)
-    descrizione = db.Column(db.String(250), nullable=False)
+    descrizione = db.Column(db.String(10000), nullable=False)
     iseemin = db.Column(db.Integer(), nullable=False)
     iseemax = db.Column(db.Integer(), nullable=False)
     agemax = db.Column(db.Integer(), nullable=False)
@@ -152,3 +152,20 @@ class Mail(db.Model):
 
     def __repr__(self):
         return  self.mail
+
+
+class BonusFirm(db.Model):
+
+    __tablename__ = 'bonusFirm'
+
+    idf = db.Column(db.Integer, primary_key=True)
+    titolof = db.Column(db.String(50), unique=True, nullable=False)
+    descrizionef = db.Column(db.String(10000), nullable=False)
+    nemployeesmin = db.Column(db.Integer(), nullable=False)
+    nemployeesmax = db.Column(db.Integer(), nullable=False)
+    sector = db.Column(db.String(50), nullable=False)
+    fatturatomin = db.Column(db.Integer(), nullable=False)
+    fatturatomax = db.Column(db.Integer(), nullable=False)
+
+    def __repr__(self):
+        return "<User %r>" % self.name

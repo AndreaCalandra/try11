@@ -104,3 +104,14 @@ class bonusForm(FlaskForm):
 class SearchForm(FlaskForm):
     searched = StringField("Search your Bonus", validators=[DataRequired(), Email()])
     submit = SubmitField('Search')
+
+
+class bonusFormf(FlaskForm):
+    titolof = StringField('Titolo',validators=[DataRequired(),Length(min=3,max=25)])
+    descrizionef = TextAreaField('Descrizione del Bonus',validators=[DataRequired(),Length(min=3,max=250)])
+    nemployeesmax = IntegerField('Numero massimo di dipendenti',validators=[DataRequired()])
+    nemployeesmin = IntegerField('Numero minimo di dipendenti',validators=[DataRequired()])
+    sector = StringField('Settore',validators=[DataRequired()])
+    fatturatomax = IntegerField('Fatturato massimo',validators=[DataRequired()])
+    fatturatomin = IntegerField('Fatturato minimo',validators=[DataRequired()])
+    submit = SubmitField('Addbonus')

@@ -15,7 +15,7 @@ app = Flask(__name__)
 #login.login_view = 'login'
 
 app.config['SECRET_KEY'] = 'sssdhgclshfsh;shd;jshjhsjhjhsjldchljk'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new9.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new10.db'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # EMAIL config
@@ -64,8 +64,8 @@ login_manager.login_view = 'login'
 
 
 import model
-from model import User, Firm, Role, feeds, questions, answers, Bonus, Mail
-from form import formRegisteration, loginForm, EditProfileForm, firmformRegisteration, firmloginForm, bonusForm, SearchForm
+from model import User, Firm, Role, feeds, questions, answers, Bonus, Mail, BonusFirm
+from form import formRegisteration, loginForm, EditProfileForm, firmformRegisteration, firmloginForm, bonusForm, SearchForm, bonusFormf
 
 #EMAIL code
 def send_mail(to,subject):
@@ -239,18 +239,25 @@ def account_details():
                 # update_{{user_details[key][0]}} hence the check for k == 'update_' etc.
                 if k == 'update_username':
                     user.username = v.rstrip()
+                    session['email'] = user.username
                 if k == 'update_usern':
                     user.usern = v.rstrip()
+                    session['usern'] = user.usern
                 if k == 'update_name':
                     user.name = v.rstrip()
+                    session['name'] = user.name
                 if k == 'update_isee':
                     user.isee = v.rstrip()
+                    session['isee'] = user.isee
                 if k == 'update_age':
                     user.age = v.rstrip()
+                    session['age'] = user.age
                 if k == 'update_profession':
                     user.profession = v.rstrip()
+                    session['profession'] = user.profession
                 if k == 'update_number_child':
                     user.number_child = v.rstrip()
+                    session['number_child'] = user.number_child
                 if k == 'update_password':
                     p = bcrypt.generate_password_hash(v.rstrip()).encode('utf-8')
                     user.password = p
@@ -340,9 +347,9 @@ def dashboardfirm():
         pic_isee = os.path.join(app.config['UPLOAD_FOLDER'], 'isee.jpg')
         pic_job = os.path.join(app.config['UPLOAD_FOLDER'], 'job.jpg')
         pic_children = os.path.join(app.config['UPLOAD_FOLDER'], 'rev.jpg')
-        return render_template('profilefirm.html', user_image = pic_profile, namef = namef, user_isee = pic_isee,
-                               user_job = pic_job, user_children = pic_children, nemployees = nemployees, fatturato = fatturato,
-                               sector = sector, piva = piva)
+        return render_template('profilefirm.html', user_image=pic_profile, namef=namef, user_isee=pic_isee,
+                               user_job=pic_job, user_children=pic_children, nemployees=nemployees, fatturato=fatturato,
+                               sector=sector, piva=piva)
     else:
         return redirect(url_for('firmlogin'))
 
@@ -362,16 +369,22 @@ def account_detailsf():
                 # update_{{user_details[key][0]}} hence the check for k == 'update_' etc.
                 if k == 'update_emailf':
                     user.emailf = v.rstrip()
+                    session['emailf'] = user.emailf
                 if k == 'update_namef':
                     user.namef = v.rstrip()
+                    session['namef'] = user.namef
                 if k == 'update_nemployees':
                     user.nemployees = v.rstrip()
+                    session['nemployees'] = user.nemployees
                 if k == 'update_piva':
                     user.piva = v.rstrip()
+                    session['piva'] = user.piva
                 if k == 'update_sector':
                     user.sector = v.rstrip()
+                    session['sector'] = user.sector
                 if k == 'update_fatturato':
                     user.fatturato = v.rstrip()
+                    session['fatturato'] = user.fatturato
             db.session.commit()
             return redirect(url_for('account_detailsf'))
     return render_template('account_detailsf.html', user_details=user_details)
@@ -379,16 +392,6 @@ def account_detailsf():
 @app.route('/404')
 def notfound():
     pic = os.path.join(app.config['UPLOAD_FOLDER'], '404.png')
-
-    # with app.app_context():
-    #
-    #     msg = Message("Hello",
-    #                   sender="bon.us.polito@gmail.com",
-    #                   recipients=["andrea.calandra99@gmail.com",
-    #                               "sebastianodelnegro@gmail.com",
-    #                               "sordellosimone@gmail.com"])
-    #     msg.html = render_template('mailReg.html')
-    #     mail.send(msg)
 
     return render_template('404.html', image=pic)
 
@@ -562,12 +565,47 @@ def bonusforyou():
     number_child = session['number_child']
     user = session['user']
 
-    sbonus = model.Bonus.query.filter((isee >= model.Bonus.iseemin) & (isee <= model.Bonus.iseemax) &
-                                      (age >= model.Bonus.agemin) & (age <= model.Bonus.agemax) &
-                                      ((profession == model.Bonus.professione) | (profession == 'qualsiasi') | (profession == 'Qualsiasi')) &
-                                      (number_child >= model.Bonus.minfigli) & (number_child <= model.Bonus.maxfigli))
+    sbonus = model.Bonus.query.filter((model.Bonus.iseemin <= isee) & (model.Bonus.iseemax >= isee) &
+                                      (model.Bonus.agemin <= age) & (model.Bonus.agemax >= age) &
+                                      ((model.Bonus.professione == profession) | (model.Bonus.professione == 'qualsiasi') | (model.Bonus.professione == 'Qualsiasi')) &
+                                      (model.Bonus.minfigli <= number_child) & (model.Bonus.maxfigli >= number_child))
 
     return render_template('bonusforyou.html', values=sbonus)
+
+
+@app.route('/addbonusfirm', methods=['POST', 'GET'])
+@login_required
+def addbonusfirm():
+    if session['email'] == 'andrea.calandra99@gmail.com':
+        name = None
+        bonus_formf = bonusFormf()
+        if bonus_formf.validate_on_submit():
+
+            session['titolof'] = bonus_formf.titolof
+            session['descrizionef'] = bonus_formf.descrizionef
+            session['nemployeesmax'] = bonus_formf.nemployeesmax
+            session['nemployeesmin'] = bonus_formf.nemployeesmin
+            session['sector'] = bonus_formf.sector
+            session['fatturatomax'] = bonus_formf.fatturatomax
+            session['fatturatomin'] = bonus_formf.fatturatomin
+
+            bonus = BonusFirm(titolof=bonus_formf.titolof.data, descrizionef=bonus_formf.descrizionef.data, nemployeesmax=bonus_formf.nemployeesmax.data,
+                   nemployeesmin=bonus_formf.nemployeesmin.data, sector=bonus_formf.sector.data, fatturatomax=bonus_formf.fatturatomax.data, fatturatomin=bonus_formf.fatturatomin.data)
+            db.session.add(bonus)
+            db.session.commit()
+            flash('successo')
+            return redirect(url_for('confirm'))
+
+        return render_template('addbonus-dbfirm.html', bonus_formf=bonus_formf, name_website='SQL Bonus to IS 2020 Platform', name=name)
+
+    else:
+        title = 'BON-U$'
+        b1 = os.path.join(app.config['UPLOAD_FOLDER'], 'job.jpg')
+        b2 = os.path.join(app.config['UPLOAD_FOLDER'], 'bonusvacanza.jpg')
+        b3 = os.path.join(app.config['UPLOAD_FOLDER'], 'ecobonus110.jpg')
+        b4 = os.path.join(app.config['UPLOAD_FOLDER'], 'BON-U$.png')
+        b5 = os.path.join(app.config['UPLOAD_FOLDER'], 'BON-U$nosfondo.png')
+        return render_template('index.html', b1 = b1, b2 = b2, b3 = b3, b4 = b4, b5 = b5, title = title)
 
 
 @app.route('/contact', methods=['POST', 'GET'])
@@ -607,6 +645,18 @@ def confirm():
     return render_template('confirm.html', image=image)
 
 
+@app.route("/confirm2")
+def confirm2():
+    image = os.path.join(app.config['UPLOAD_FOLDER'], '4.PNG')
+    return render_template('confirm.html', image=image)
+
+
+@app.route("/confirm3")
+def confirm3():
+    image = os.path.join(app.config['UPLOAD_FOLDER'], '3.jpg')
+    return render_template('confirm.html', image=image)
+
+
 @app.route("/newsletter", methods=['POST', 'GET'])
 def newsletter():
     if request.method == "POST":
@@ -619,7 +669,7 @@ def newsletter():
         db.session.add(ma)
         db.session.commit()
 
-        return redirect("confirm")
+        return redirect("confirm2")
 
     return render_template("newsletter.html")
 
@@ -638,13 +688,17 @@ def sendnews():
             with app.app_context():
 
                 all = model.Mail.query.all()
-                s = ''
+                s = '"'
                 for item in all:
-                    if item.__repr__() == "andrea.calandra99@gmail.com":
-                        s = item.__repr__()
+                    if s == '"':
+                        s = '"' + item.__repr__()
                     else:
-                        s = s + ", " +item.__repr__()
+                        s = s + '", "' + item.__repr__()
+
+                s = s+'"'
                 print s
+
+                #TODO risolvere le mail
 
                 msg = Message("News Letter",
                               sender="bon.us.polito@gmail.com",
@@ -652,7 +706,7 @@ def sendnews():
                 msg.body = ques
                 mail.send(msg)
 
-            return redirect('confirm')
+            return redirect('confirm3')
         else:
             return render_template('sendnews.html')
 
