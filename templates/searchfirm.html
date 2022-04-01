@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+
+
+{% block content %}
+
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <div class="col-lg-8 mb-4">
+        <form method="post" >
+        <div class="control-group form-group">
+            <div class="controls">
+              {{ form.searched.label  }}
+                {{ form.searched(class='form-control') }}
+
+            <p class="help-block"></p>
+            </div>
+          </div>
+          <div id="success"></div>
+          <!-- For success/fail messages -->
+        {{ form.submit(class='btn btn-primary') }}
+            {{ form.hidden_tag() }}
+        </form>
+      </div>
+
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+
+
+    {% for bonu in sbonus %}
+
+        <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+        {{ bonu.titolof }}
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+        <div class="accordion-body"><strong>Descrizione:</strong><br>{{ bonu.descrizionef }}</div>
+  </div>
+        </div>
+
+{#        <div class="card text-dark bg-light mb-3" style="max-width: 50rem;">#}
+{#  <div class="card-header">#}
+{#    <h3>{{ bonu.titolo }}</h3>#}
+{#  </div>#}
+{#  <div class="card-body">#}
+{#    <blockquote class="blockquote mb-0">#}
+{#        <h4>Descrizione: </h4> <br>#}
+{#          <p class="article-content">{{ bonu.descrizione }}</p> <br>#}
+{#        <h4>Isee Min: </h4> <br>#}
+{#         <p class="article-content">{{ bonu.iseemin }}</p> <br>#}
+{#        <h4>Isee Max: </h4> <br>#}
+{#         <p class="article-content">{{ bonu.iseemax }}</p> <br>#}
+{#        <h4>Age Min: </h4> <br>#}
+{#         <p class="article-content">{{ bonu.agemax }}</p> <br>#}
+{#        <h4>Age Max: </h4> <br>#}
+{#        <p class="article-content">{{ bonu.agemin }}</p> <br>#}
+{#        <h4>Max Figli: </h4> <br>#}
+{#            <p class="article-content">{{ bonu.maxfigli }}</p> <br>#}
+{#        <h4>Min Figli: </h4> <br>#}
+{#            <p class="article-content">{{ bonu.minfigli }}</p> <br>#}
+{#        <h4>Professione: </h4> <br>#}
+{#            <p class="article-content">{{ bonu.professione }}</p> <br>#}
+{##}
+{#    </blockquote>#}
+{#  </div>#}
+{#</div>#}
+    {% endfor %}
+    </div>
+    <br>
+
+    <button type="button" class="btn btn-outline-secondary" onclick="location.href='bonuspage'">Go Back</button>
+    <br>
+    <br>
+
+{% endblock content %}

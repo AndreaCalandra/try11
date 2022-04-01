@@ -65,7 +65,7 @@ login_manager.login_view = 'login'
 
 import model
 from model import User, Firm, Role, feeds, questions, answers, Bonus, Mail, BonusFirm
-from form import formRegisteration, loginForm, EditProfileForm, firmformRegisteration, firmloginForm, bonusForm, SearchForm, bonusFormf
+from form import formRegisteration, loginForm, EditProfileForm, firmformRegisteration, firmloginForm, bonusForm, SearchForm, bonusFormf, SearchFormFirm
 
 #EMAIL code
 def send_mail(to,subject):
@@ -80,7 +80,7 @@ def setup_db():
     role_admin = Role(role_name='Admin')
     role_user = Role(role_name='User')
     pass_c = bcrypt.generate_password_hash("Bon-U$2022")
-    #user_admin = User(username="andrea.calandra99@gmail.com", usern="Cally", name="Andrea", password=pass_c, isee=0,
+    #user_admin = User(username="bon.us.polito@gmail.com", usern="Bonus", name="Bonus", password=pass_c, isee=0,
     #                  age=0, profession="", number_child=0, role_name=role_admin)
     db.session.add_all([role_admin, role_user])
     #db.session.add(user_admin)
@@ -270,12 +270,19 @@ def account_details():
 @app.route('/index')
 def index():
     title = 'BON-U$'
+    s = ''
     b1 = os.path.join(app.config['UPLOAD_FOLDER'], 'job.jpg')
     b2 = os.path.join(app.config['UPLOAD_FOLDER'], 'bonusvacanza.jpg')
     b3 = os.path.join(app.config['UPLOAD_FOLDER'], 'ecobonus110.jpg')
     b4 = os.path.join(app.config['UPLOAD_FOLDER'], 'BON-U$.png')
     b5 = os.path.join(app.config['UPLOAD_FOLDER'], 'BON-U$nosfondo.png')
-    return render_template('index.html', b1 = b1, b2 = b2, b3 = b3, b4 = b4, b5 = b5, title = title)
+    if current_user.is_authenticated:
+        if session['user'] == True:
+            s = session['email']
+        else:
+            s = session['emailf']
+
+    return render_template('index.html', b1=b1, b2=b2, b3=b3, b4=b4, b5=b5, title=title, s=s)
 
 
 
@@ -402,7 +409,11 @@ def feedback():
 @app.route('/newFeedback', methods=["POST", "GET"])
 @login_required
 def newFeedback():
-    u = session['usern']
+    if session['user'] == True:
+        u = session['usern']
+    else:
+        u = session['namef']
+
     if request.method == "POST":
         username = request.form['username']
         if username == "" :
@@ -424,7 +435,11 @@ def newFeedback():
 @app.route('/Newquestion' , methods=["POST", "GET"])
 @login_required
 def Newquestion():
-    u = session['usern']
+    if session['user'] == True:
+        u = session['usern']
+    else:
+        u = session['namef']
+
     if request.method == "POST":
         username = request.form['username']
         if username == "" :
@@ -439,7 +454,6 @@ def Newquestion():
         q = questions(username, ques)
         db.session.add(q)
         db.session.commit()
-        u = session['usern']
         return redirect('question')
     else:
         return render_template('question.html', u=u)
@@ -453,7 +467,11 @@ def question():
 @app.route('/answer/<int:question_id>')
 @login_required
 def answer(question_id):
-    u = session['usern']
+    if session['user'] == True:
+        u = session['usern']
+    else:
+        u = session['namef']
+
     if request.method == "POST":
         userAnswer = request.form['userAnswer']
         if userAnswer == "" :
@@ -475,7 +493,11 @@ def answer(question_id):
 @app.route('/NewAnswer' , methods=["POST", "GET"])
 @login_required
 def NewAnswer():
-    u = session['usern']
+    if session['user'] == True:
+        u = session['usern']
+    else:
+        u = session['namef']
+
     if request.method == "POST":
         idQ = request.form['idQ']
         userAnswer = request.form['userAnswer']
@@ -501,7 +523,7 @@ def NewAnswer():
 @app.route('/addbonus', methods=['POST', 'GET'])
 @login_required
 def addbonus():
-    if session['email'] == 'andrea.calandra99@gmail.com':
+    if session['email'] == 'bon.us.polito@gmail.com':
         name = None
         bonus_form = bonusForm()
         if bonus_form.validate_on_submit():
@@ -576,7 +598,7 @@ def bonusforyou():
 @app.route('/addbonusfirm', methods=['POST', 'GET'])
 @login_required
 def addbonusfirm():
-    if session['email'] == 'andrea.calandra99@gmail.com':
+    if session['email'] == 'bon.us.polito@gmail.com':
         name = None
         bonus_formf = bonusFormf()
         if bonus_formf.validate_on_submit():
@@ -608,12 +630,53 @@ def addbonusfirm():
         return render_template('index.html', b1 = b1, b2 = b2, b3 = b3, b4 = b4, b5 = b5, title = title)
 
 
+@app.route('/bonuspagefirm', methods=['POST', 'GET'])
+def searchfirm():
+    form = SearchFormFirm()
+
+    parola = form.searched.data
+
+    if parola == None:
+        sbonus = model.BonusFirm.query.filter(model.BonusFirm.descrizionef.like('%')).all()
+    else:
+        sbonus = model.BonusFirm.query.filter(model.BonusFirm.descrizionef.like('%'+parola+'%')).all()
+
+    return render_template('searchfirm.html', form=form, sbonus=sbonus)
+
+
+@app.route('/bonuspagefirm')
+def bonuspagefirm():
+
+    return render_template('bonuspagefirm.html', values=model.BonusFirm.query.all())
+
+
+@app.route('/bonusforyoufirm')
+@login_required
+def bonusforyoufirm():
+    nemployees = session['nemployees']
+    sector = session['sector']
+    fatturato = session['fatturato']
+    user = session['user']
+
+    sbonus = model.BonusFirm.query.filter((model.BonusFirm.nemployeesmin <= nemployees) & (model.BonusFirm.nemployeesmax >= nemployees) &
+                                      (model.BonusFirm.fatturatomin <= fatturato) & (model.BonusFirm.fatturatomax >= fatturato) &
+                                      ((model.BonusFirm.sector == sector) | (model.BonusFirm.sector == 'qualsiasi') | (model.BonusFirm.sector == 'Qualsiasi')))
+
+    return render_template('bonusforyoufirm.html', values=sbonus)
+
+
+
 @app.route('/contact', methods=['POST', 'GET'])
 @login_required
 def contact():
     image = os.path.join(app.config['UPLOAD_FOLDER'], 'BeFunky-design.png')
-    u = session['usern']
-    m = session['email']
+    if session['user'] == True:
+        u = session['usern']
+        m = session['email']
+    else:
+        u = session['namef']
+        m = session['emailf']
+
     if request.method == "POST":
         username = request.form['username']
         if username == "" :
@@ -629,7 +692,7 @@ def contact():
 
             msg = Message("Contact us",
                           sender="bon.us.polito@gmail.com",
-                          recipients=["andrea.calandra99@gmail.com"])   #indirizzo mail dedicato a contact us
+                          recipients=["bon.us.polito.mail@gmail.com"])
             msg.body = "L'utente "+u+", con indirizzo mail "+m+" ha richiesto: "+ques
             mail.send(msg)
 
@@ -677,7 +740,7 @@ def newsletter():
 @app.route('/sendnews', methods=['POST', 'GET'])
 @login_required
 def sendnews():
-    if session['email'] == 'andrea.calandra99@gmail.com':
+    if session['email'] == 'bon.us.polito@gmail.com':
 
         if request.method == "POST":
             ques = request.form['ques']

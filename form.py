@@ -115,3 +115,8 @@ class bonusFormf(FlaskForm):
     fatturatomax = IntegerField('Fatturato massimo',validators=[DataRequired()])
     fatturatomin = IntegerField('Fatturato minimo',validators=[DataRequired()])
     submit = SubmitField('Addbonus')
+
+
+class SearchFormFirm(FlaskForm):
+    searched = StringField("Search your Bonus", validators=[DataRequired(), Email()])
+    submit = SubmitField('Search')
