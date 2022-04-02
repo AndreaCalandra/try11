@@ -2,11 +2,12 @@
 <html lang="en">
 
 <head>
-
+<link rel="stylesheet" type="text/css" href="/static/css/footer.css">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+
 
   <title>{{ title }}</title>
 <!--  <link rel="icon" type="image/x-icon" href="{{ b5 }}"> -->
@@ -237,15 +238,24 @@
     </div>
   </div>
 
-  <!-- /.container -->
+
+
+
 
   <!-- Footer -->
-  <footer class="py-5 bg-dark">
-    <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
-    </div>
-    <!-- /.container -->
-  </footer>
+<footer class="social-footer">
+  <div class="social-footer-left">
+    <a href="#"><img class="logo" src="https://placehold.it/150x30"></a>
+  </div>
+  <div class="social-footer-icons">
+      <a href="#"><img class="logo" src="/static/images/facebook-logo-black.png"></a>
+      <a href="#"><img class="logo" src="/static/images/instagram-logo-black.png"></a>
+      <a href="#"><img class="logo" src="/static/images/youtube-logo-black.png"></a>
+      <a href="#"><img class="logo" src="/static/images/twitter-logo-black.png"></a>
+  </div>
+</footer>
+
+
 
   <!-- Bootstrap core JavaScript -->
   <script src="{{ url_for('static',filename='vendor/jquery/jquery.min.js') }}"></script>

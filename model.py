@@ -38,19 +38,6 @@ class User(db.Model, UserMixin):
         }
         return user_details
 
-    def get_reset_token(self, expires_sec=1800):
-        s = Serializer(app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'id': self.id}).decode('utf-8')
-
-    @staticmethod
-    def verify_reset_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
-        try:
-            user_id = s.loads(token)['id']
-        except:
-            return None
-        return User.query.get(user_id)
-
 
 class Role(db.Model):
     __tablename__ = "roles"
@@ -93,7 +80,7 @@ class Firm(db.Model, UserMixin):
 
 class feeds(db.Model):
     __tablename__ = 'feeds'
-    _id = db.Column("id" , db.Integer , primary_key=True)
+    _id = db.Column("id", db.Integer, primary_key=True)
     username = db.Column(db.String(100))
     feedback = db.Column(db.String(1000))
 
@@ -146,7 +133,6 @@ class Bonus(db.Model):
 
 
 class Mail(db.Model):
-
     __tablename__ = 'news'
     mail = db.Column(db.String(50), nullable=False, primary_key=True)
 

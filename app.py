@@ -88,15 +88,12 @@ def setup_db():
     #db.create_all()
 
 
-
-
 @login_manager.user_loader
 def load_user(user_id):
     if session['user']:
         return User.query.get(int(user_id))
     else:
         return Firm.query.get(int(user_id))
-
 
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -118,16 +115,13 @@ def regiterPagedb():
                        profession=regiterForm.profession.data, number_child=regiterForm.number_child.data, role_name=role_name)
         db.session.add(newuser)
         db.session.commit()
-
         with app.app_context():
             msg = Message("Benvenuto",
                           sender="bon.us.polito@gmail.com",
                           recipients=[regiterForm.email.data])
             msg.html = render_template('mailReg.html')
             mail.send(msg)
-
         return redirect(url_for('login'))
-
     return render_template('register-db.html', regiterForm=regiterForm, name=name)
 
 
@@ -147,16 +141,12 @@ def login():
                 session['profession'] = user_info.profession
                 session['number_child'] = user_info.number_child
                 session['user'] = True
-
                 login_user(user_info)
                 return redirect('dashboard')
-
             else:
                 flash("errore")
                 return render_template('login.html', login_form=login_form)
-
         return render_template('login.html', login_form=login_form)
-
     else:
         return redirect('dashboard')
 
@@ -173,9 +163,9 @@ def dashboard():
         pic_isee = os.path.join(app.config['UPLOAD_FOLDER'], 'isee.jpg')
         pic_job = os.path.join(app.config['UPLOAD_FOLDER'], 'job.jpg')
         pic_children = os.path.join(app.config['UPLOAD_FOLDER'], 'children.jpg')
-        return render_template('profile.html', user_image = pic_profile, username = usern, user_isee = pic_isee,
-                               user_job = pic_job, user_children = pic_children, isee = isee, age = age,
-                               profession = profession, number_child = number_child)
+        return render_template('profile.html', user_image=pic_profile, username=usern, user_isee=pic_isee,
+                               user_job=pic_job, user_children=pic_children, isee=isee, age=age,
+                               profession=profession, number_child=number_child)
     else:
         return redirect(url_for('login'))
 
@@ -193,37 +183,6 @@ def logout():
         return redirect(url_for('firmlogin'))
 
 
-
-@app.route('/editProfile', methods=['GET', 'POST'])
-@login_required
-def editProfile():
-    form = EditProfileForm(current_user.usern)
-    if form.validate_on_submit():
-        current_user.name = form.name.data
-        current_user.familyname = form.familyname.data
-        current_user.usern = form.usern.data
-        current_user.email = form.email.data
-        current_user.password = form.password.data
-        current_user.isee = form.isee.data
-        current_user.age = form.age.data
-        current_user.profession = form.profession.data
-        current_user.number_child = form.number_child.data
-        db.session.commit()
-        flash('Your changes have been saved.')
-        return redirect(url_for('editProfile'))
-    elif request.method == 'GET':
-        form.name.data = current_user.name
-        form.familyname.data = current_user.familyname
-        form.usern.data = current_user.usern
-        form.email.data = current_user.email
-        form.password.data = current_user.password
-        form.isee.data = current_user.isee
-        form.age.data = current_user.age
-        form.profession.data = current_user.profession
-        form.number_child.data = current_user.number_child
-    return render_template('editProfile.html', title='Edit Profile', form=form)
-
-
 @app.route('/account_details', methods=['GET', 'POST'])
 @login_required
 def account_details():
@@ -233,10 +192,6 @@ def account_details():
         if request.method == 'POST':
             updated_values_dict = request.form.to_dict()
             for k, v in updated_values_dict.items():
-                # TODO validation checks
-                # TODO password change
-                # The 'name' paramater in each form-control is jinja template of
-                # update_{{user_details[key][0]}} hence the check for k == 'update_' etc.
                 if k == 'update_username':
                     user.username = v.rstrip()
                     session['email'] = user.username
