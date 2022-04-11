@@ -1,16 +1,16 @@
 {% extends "layoutChat.html" %}
 
 {% block question %}
-      <div class="titleBlock"><h1 style="text-align: center" class="titleText">QUESTION</h1><div class="titleAnswer"></div></div>
+      <div class="titleBlock"><h1 style="text-align: center" class="titleText">DOMANDE</h1><div class="titleAnswer"></div></div>
 
          <hr>
-            <button onclick="location.href='/Newquestion'" class="btn btn-secondary btn-lg" >Add Another Question</button>
+            <button onclick="location.href='/Newquestion'" class="btn btn-secondary btn-lg" >Aggiungi un'altra domanda</button>
          <hr>
          <br>
          <table class="table table-dark table-striped">
                 <tr>
-                    <th><p>NAME</p></th>
-                    <th><p>QUESTION</p></th>
+                    <th><p>NOME</p></th>
+                    <th><p>DOMANDA</p></th>
                 </tr>
              {% for item in values %}
                 <tr>

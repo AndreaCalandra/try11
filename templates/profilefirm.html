@@ -17,10 +17,10 @@
       <div class="text-center" style="margin-top: 20pt">
         <div class="row">
             <div class="col">
-              <button class='btn btn-primary btn-lg' style="width: 102%" onclick="window.location.href='{{ url_for( 'bonusforyoufirm') }}';">Bonus for you</button>
+              <button class='btn btn-primary btn-lg' style="width: 102%" onclick="window.location.href='{{ url_for( 'bonusforyoufirm') }}';">BONUS PER TE</button>
             </div>
             <div class="col">
-              <button type="button" class='btn btn-secondary btn-lg' style="width: 102%" onclick="window.location.href='{{ url_for( 'account_detailsf') }}';">Edit profile</button>
+              <button type="button" class='btn btn-secondary btn-lg' style="width: 102%" onclick="window.location.href='{{ url_for( 'account_detailsf') }}';">MODIFICA PROFILO</button>
             </div>
         </div>
       </div>
@@ -37,8 +37,8 @@
       <div class="card" style="width: 18rem;">
           <img src="{{ user_isee }}" class="card-img-top", height="165pt">
               <div class="card-body">
-                <h5 class="card-title">Number of employees</h5>
-                <p class="card-text">The number of employees of the firm is {{ nemployees }}.<br> Press the button to change it</p>
+                <h5 class="card-title">Numero di dipendenti</h5>
+                <p class="card-text">Il numero di dipendenti della tua azienda è: {{ nemployees }}.<br> premi il bottone per modificarlo</p>
                   <br><br>
                 <a href="#" class="btn btn-primary" onclick="window.location.href='{{ url_for( 'account_detailsf') }}';">Edit</a>
               </div>
@@ -48,8 +48,8 @@
       <div class="card" style="width: 18rem;">
           <img src="{{ user_children }}" class="card-img-top", height="165pt">
               <div class="card-body">
-                <h5 class="card-title">revenue</h5>
-                <p class="card-text">the revenue of the firm is {{ fatturato }}€.<br> Press the button to change it</p>
+                <h5 class="card-title">Fatturato</h5>
+                <p class="card-text">il fatturato della tua azienda è {{ fatturato }}€.<br> premi il bottone per modificarlo</p>
                 <a href="#" class="btn btn-primary" style="margin-top: 37pt" onclick="window.location.href='{{ url_for( 'account_detailsf') }}';">Edit</a>
               </div>
       </div>
@@ -58,8 +58,8 @@
       <div class="card" style="width: 18rem;">
           <img src="{{ user_job }}" class="card-img-top", height="165pt">
               <div class="card-body">
-                <h5 class="card-title">Sector</h5>
-                  <p class="card-text">The sector of the firm is: {{ sector }}.<br> Press the button to change it</p>
+                <h5 class="card-title">Settore</h5>
+                  <p class="card-text">Il settore della tua azienda è: {{ sector }}.<br> premi il bottone per modificarlo</p>
                 <a href="#" class="btn btn-primary" style="margin-top: 37pt" onclick="window.location.href='{{ url_for( 'account_detailsf') }}';">Edit</a>
               </div>
       </div>

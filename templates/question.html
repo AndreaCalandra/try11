@@ -6,28 +6,28 @@
       <div class="container">
         <div class="row">
             <div class="col">
-                <div class="titleBlock"><h1 style="text-align: center" class="titleText">NEW QUESTION</h1><div class="titleAnswer"></div></div>
+                <div class="titleBlock"><h1 style="text-align: center" class="titleText">NUOVA DOMANDA</h1><div class="titleAnswer"></div></div>
                 <br>
                 <hr>
 
                 <form action="/Newquestion" method="POST" class="form_feedback">
-                    <h2 class="h2_feedback" style="text-align: center">complete the following form to enter a new question</h2>
+                    <h2 class="h2_feedback" style="text-align: center">completa il seguente fprm per inserire una nuova domanda</h2>
                     <div class="form-group">
                         <label class="attributes">Username</label>
                          <input type="text" class="form-control" id="username" name="username" value="{{ u }}" placeholder="Select a username" >
                     </div>
 
                     <div class="form-group">
-                        <label class="attributes">Question</label>
+                        <label class="attributes">Domanda</label>
                         <textarea class="form-control" id="feedbackTextArea" rows="3" name="question" placeholder="Enter your question"></textarea>
                     </div>
                     <br>
-                    <button type="submit" class="btn btn-primary btn-lg">Submit your question</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Invia la tua domanda</button>
 
 
                 </form>
                 <hr>
-                <button onclick="location.href='/question'" class="btn btn-secondary btn-lg">Back to Questions</button>
+                <button onclick="location.href='/question'" class="btn btn-secondary btn-lg">Torna alle domande</button>
             </div>
         </div>
     </div>

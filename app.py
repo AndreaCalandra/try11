@@ -4,36 +4,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 import os, sqlite3
 from flask_mail import Message,Mail
-from flask_login import LoginManager
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 
 
-#login = LoginManager(app)
-#login.init_app(app)
-#login.login_view = 'login'
-
 app.config['SECRET_KEY'] = 'sssdhgclshfsh;shd;jshjhsjhjhsjldchljk'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new10.db'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# EMAIL config
-# app.config['MAIL_USERNAME']="" #os.environ['EMAIL_USERNAME']
-# app.config['MAIL_PASSWORD']=""
-# app.config['MAIL_TLS']=True
-# app.config['MAIL_SERVER']='smtp.mail.com'
-# app.config['MAIL_PORT']=587
-# app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
-# app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <flasky@example.com>'
-#MAX_CONTENT_PATH = '5120'
-# app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-# app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-# app.config['MAIL_USERNAME'] = 'bon.us.polito@gmail.com'
-# app.config['MAIL_PASSWORD'] = 'Bon-U$2022'
-# app.config['MAIL_TLS']=True
-# app.config['MAIL_SERVER']='smtp.mail.com'
-# app.config['MAIL_PORT']=587
 
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_USERNAME'] = 'bon.us.polito@gmail.com'
@@ -43,12 +22,8 @@ app.config['MAIL_PORT'] = 587
 
 mail = Mail(app)
 
-
-
 picFolder = os.path.join('static', 'images')
 app.config['UPLOAD_FOLDER'] = picFolder
-
-
 
 db = SQLAlchemy(app)
 
@@ -67,7 +42,6 @@ import model
 from model import User, Firm, Role, feeds, questions, answers, Bonus, Mail, BonusFirm
 from form import formRegisteration, loginForm, EditProfileForm, firmformRegisteration, firmloginForm, bonusForm, SearchForm, bonusFormf, SearchFormFirm
 
-#EMAIL code
 def send_mail(to,subject):
     msg=Message(subject,recipients=[to],sender='bon.us.polito@gmail.com')
     msg.body= 'Benvenuto'
@@ -325,10 +299,7 @@ def account_detailsf():
         if request.method == 'POST':
             updated_values_dict = request.form.to_dict()
             for k, v in updated_values_dict.items():
-                # TODO validation checks
                 # TODO password change
-                # The 'name' paramater in each form-control is jinja template of
-                # update_{{user_details[key][0]}} hence the check for k == 'update_' etc.
                 if k == 'update_emailf':
                     user.emailf = v.rstrip()
                     session['emailf'] = user.emailf

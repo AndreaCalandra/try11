@@ -17,10 +17,10 @@
       <div class="text-center" style="margin-top: 20pt">
         <div class="row">
             <div class="col">
-              <button class='btn btn-primary btn-lg' style="width: 102%" onclick="window.location.href='{{ url_for( 'bonusforyou') }}';">Bonus for you</button>
+              <button class='btn btn-primary btn-lg' style="width: 102%" onclick="window.location.href='{{ url_for( 'bonusforyou') }}';">BONUS PER TE</button>
             </div>
             <div class="col">
-              <button type="button" class='btn btn-secondary btn-lg' style="width: 102%" onclick="window.location.href='{{ url_for( 'account_details') }}';">Edit profile</button>
+              <button type="button" class='btn btn-secondary btn-lg' style="width: 102%" onclick="window.location.href='{{ url_for( 'account_details') }}';">MODIFICA PROFILO</button>
             </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
           <img src="{{ user_isee }}" class="card-img-top", height="165pt">
               <div class="card-body">
                 <h5 class="card-title">ISEE</h5>
-                <p class="card-text">Your ISEE (indicatore della situazione economica equivalente) is {{ isee }}€.<br> Press the button to change it</p>
+                <p class="card-text">Il tuo ISEE (indicatore della situazione economica equivalente) è {{ isee }}€.<br> premi il bottone per modificarlo</p>
                 <a href="#" class="btn btn-primary" onclick="window.location.href='{{ url_for( 'account_details') }}';">Edit</a>
               </div>
       </div>
@@ -47,8 +47,8 @@
       <div class="card" style="width: 18rem;">
           <img src="{{ user_children }}" class="card-img-top", height="165pt">
               <div class="card-body">
-                <h5 class="card-title">Number of children </h5>
-                <p class="card-text">Your number of child/children is {{ number_child }}.<br> Press the button to change it</p>
+                <h5 class="card-title">Numero di bambini </h5>
+                <p class="card-text">Hai {{ number_child }} bambino/i.<br> premi il bottone per modificarlo</p>
                 <a href="#" class="btn btn-primary" style="margin-top: 37pt" onclick="window.location.href='{{ url_for( 'account_details') }}';">Edit</a>
               </div>
       </div>
@@ -57,8 +57,8 @@
       <div class="card" style="width: 18rem;">
           <img src="{{ user_job }}" class="card-img-top", height="165pt">
               <div class="card-body">
-                <h5 class="card-title">Profession</h5>
-                  <p class="card-text">Your profession is: {{ profession }}.<br> Press the button to change it</p>
+                <h5 class="card-title">Professione</h5>
+                  <p class="card-text">La tua professione è: {{ profession }}.<br> premi il bottone per modificarlo</p>
                 <a href="#" class="btn btn-primary" style="margin-top: 37pt" onclick="window.location.href='{{ url_for( 'account_details') }}';">Edit</a>
               </div>
       </div>
